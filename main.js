@@ -1,5 +1,6 @@
-var google = require('google')
-var fsmod = require('fs')
+var google  = require('google')
+var fsmod   = require('fs')
+var persist = require('./persistence_module');
 
 var filename = 'listaat'
 if(fsmod.existsSync(__dirname + '/' + filename + '.txt')){
@@ -19,6 +20,8 @@ lineReader.on('line', function (line) {
   var nextCounter = 0
 
   google(line, function (err, res){
+    // Escreve a palavra-chave
+    persist.write(line + '\n');
     if (err) {
       console.error(err)
       return
@@ -27,9 +30,13 @@ lineReader.on('line', function (line) {
 
     for (var i = 0; i < res.links.length; ++i) {
       var link = res.links[i]
-      console.log(link.href)
-      console.log(link.title)
-      console.log(link.description + "\n")
+      // Ignora links nulos
+      if (link.href == null) { continue; }
+      // Persiste os links no arquivo texto
+      persist.write('\t' + link.href + '\n');
+      persist.write('\t' + link.title + '\n');
+      //persist.write('\t' + link.description + '\n');
+      console.log(link.href)      
     }
 
     if (nextCounter < 4) {
