@@ -19,7 +19,11 @@ lineReader.on('line', function (line) {
   var nextCounter = 0
 
   google(line, function (err, res){
-    if (err) console.error(err)
+    if (err) {
+      console.error(err)
+      return
+    }
+
 
     for (var i = 0; i < res.links.length; ++i) {
       var link = res.links[i]
