@@ -1,0 +1,23 @@
+{
+  "name": "observatorio-google",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "google": "^2.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GTaumaturgo/Observatorio-google.git"
+  },
+  "author": "Time-Google",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GTaumaturgo/Observatorio-google/issues"
+  },
+  "homepage": "https://github.com/GTaumaturgo/Observatorio-google#readme"
+}
