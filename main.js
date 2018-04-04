@@ -18,12 +18,12 @@ lineReader.on('line', function (line) {
 
   google.resultsPerPage = 25
   var nextCounter = 0
-
+  //console.error(line);  
   google(line, function (err, res){
-    // Escreve a palavra-chave
+    // Escreve a palavra-chave    
     persist.write(line + '\n');
     if (err) {
-      console.error(err)
+      console.error(err);
       return
     }
 
@@ -34,14 +34,9 @@ lineReader.on('line', function (line) {
       if (link.href == null) { continue; }
       // Persiste os links no arquivo texto
       persist.write('\t' + link.href + '\n');
-      persist.write('\t' + link.title + '\n');
+      //persist.write('\t' + link.title + '\n');
       //persist.write('\t' + link.description + '\n');
       console.log(link.href)      
-    }
-
-    if (nextCounter < 4) {
-      nextCounter += 1
-      if (res.next) res.next()
     }
   })
 });
