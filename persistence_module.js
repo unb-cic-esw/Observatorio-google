@@ -2,8 +2,9 @@ var fs = require('fs');
 
 // O proposito deste modulo eh poder trocar a forma 
 // de saida do programa sem alterar sua 'main'
-var log_writter = fs.createWriteStream('log.txt', {
+var log_writter = fs.createWriteStream(new Date().toLocaleDateString() + '_scrapper_log.txt', {
   flags: 'w'
+
   // Usa-se sempre em modo 'w'(Re-escrevendo o arquivo)
 });
 
