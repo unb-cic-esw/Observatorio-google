@@ -12,7 +12,9 @@ function httpGet(theUrl){
 
 exports.retrieveLinks = function(query, customsearchId, APIkey){
 	var result = httpGet("https://www.googleapis.com/customsearch/v1?q=" + query + "&cx=" + customsearchId + "&key=" + APIkey + "&cr=countryBR")
-	var fs = require('fs');
-	query = query.replace(' ', '_')
-	fs.writeFile("./" + query + ".json", result, err)
+	result = JSON.parse(result)
+	var resultLinks = []
+	for(var i = 0; i < 10; i++)
+		resultLinks.push(result["items"][i]["link"])
+	console.log(resultLinks)
 }
