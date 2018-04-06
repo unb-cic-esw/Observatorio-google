@@ -16,5 +16,5 @@ exports.retrieveLinks = function(query, customsearchId, APIkey){
 	var resultLinks = []
 	for(var i = 0; i < 10; i++)
 		resultLinks.push(result["items"][i]["link"])
-	console.log(resultLinks)
+	return resultLinks;
 }

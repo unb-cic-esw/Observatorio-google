@@ -1,13 +1,18 @@
-var fs = require('fs');
+module.exports = (fileName) => {
 
-// O proposito deste modulo eh poder trocar a forma 
-// de saida do programa sem alterar sua 'main'
-var log_writter = fs.createWriteStream(new Date().toLocaleDateString() + '_scrapper_log.txt', {
-  flags: 'w'
+	var module = {};
 
-  // Usa-se sempre em modo 'w'(Re-escrevendo o arquivo)
-});
+	var fs = require('fs');
 
-exports.write = function (string) {
-	log_writter.write(string);	
+	// O proposito deste modulo eh poder trocar a forma 
+	// de saida do programa sem alterar sua 'main'
+	var log_writter = fs.createWriteStream(fileName, {
+	  flags: 'w'
+	});
+
+	module.write = function (string) {
+		log_writter.write(string);
+	}
+
+	return module;
 }
