@@ -1,12 +1,12 @@
 module.exports = (fileName) => {
-	var outputFolder = 'resultados';
-	var dirName = __dirname + '/' + outputFolder;
+	var outputFolder = 'resultados'; //para facilitar mudar o path de resposta
+	var dirName = __dirname + '/' + outputFolder; //para verificar de existe
 
 	var module = {};
 
 	var fs = require('fs');
-	if(!fs.existsSync(dirName)){
-    	fs.mkdirSync(dirName, 0766, function(err){
+	if(!fs.existsSync(dirName)){ //verifica a existencia da pasta de respostas
+    	fs.mkdirSync(dirName, 0766, function(err){ //se nao existe, cria a pasta
         	if(err){
             	console.log(err);
             	response.send("diretorio nao pode ser criado.\n");
