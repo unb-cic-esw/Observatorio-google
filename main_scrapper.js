@@ -1,7 +1,8 @@
 var google  = require('google')
 var fsmod   = require('fs')
+var dateLog = new Date()
 var persist = require('./persistence_module')(
-  new Date().toLocaleDateString() + '_scrapper_log.txt');
+  dateLog.toLocaleDateString() + '_' + dateLog.toLocaleTimeString() + '_scrapper_log.txt');
 
 var filename = 'listaat'
 if(fsmod.existsSync(__dirname + '/' + filename + '.txt')){

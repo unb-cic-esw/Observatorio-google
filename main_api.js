@@ -1,7 +1,8 @@
 var googleAPI  = require('./google_api')
 var fsmod = require('fs')
+var dateLog = new Date()
 var persist = require('./persistence_module')(
-	new Date().toLocaleDateString() + '_api_log.txt');
+	dateLog.toLocaleDateString() + '_' + dateLog.toLocaleTimeString() + '_api_log.txt');
 
 var filename = 'listaat'
 if(fsmod.existsSync(__dirname + '/' + filename + '.txt')){
