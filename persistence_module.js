@@ -1,5 +1,6 @@
 module.exports = (fileName) => {
-	var dirName = __dirname + '/resultados';
+	var outputFolder = 'resultados';
+	var dirName = __dirname + '/' + outputFolder;
 
 	var module = {};
 
@@ -15,7 +16,7 @@ module.exports = (fileName) => {
 
 	// O proposito deste modulo eh poder trocar a forma 
 	// de saida do programa sem alterar sua 'main'
-	var log_writter = fs.createWriteStream(fileName, {
+	var log_writter = fs.createWriteStream(outputFolder + '/' + fileName, {
 	  flags: 'w'
 	});
 
