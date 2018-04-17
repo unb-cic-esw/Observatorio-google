@@ -15,11 +15,12 @@ exports.retrieveLinks = function(query, customsearchId, APIkey, num){ //monta a 
 	result = JSON.parse(result)	
 	var resultLinks = []
 	try{
-		for(var i of result["items"])		
-			resultLinks.push(i["link"])
+		for(var i of result["items"])
+			resultLinks.push({"title" : i["title"], "link" : i["link"]})
 	}
 	catch(e) {
 		// Captura se o link retornado for nulo(Type Error)
+		console.log("ex")
 		resultLinks = []
 	}
 	// Caso tenha problema retorna apenas um vetor nulo

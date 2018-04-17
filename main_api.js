@@ -23,8 +23,10 @@ lineReader.on('line', function (line) { //para cara linha de listaat, uma busca 
   if(line && result) {
     // Apenas escreve se linha e resultado são não-nulos
     persist.write(line + '\n');
+
     result.forEach((currentValue) => {
-      persist.write('\t' + currentValue + '\n');
+      persist.write('\t*' + currentValue["title"] + '\n');
+      persist.write('\t\t' + currentValue["link"] + '\n');
     })
   }
   
