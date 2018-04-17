@@ -10,13 +10,13 @@ function httpGet(theUrl){ //recupera os dados da query e retorna o JSON de resul
 	return xmlHttp.responseText
 }
 
-exports.retrieveLinks = function(query, customsearchId, APIkey){ //monta a mensagem url da pesquisa a ser feita, extrai os dados que queremos do JSON resultante
-	var result = httpGet("https://www.googleapis.com/customsearch/v1?q=" + query + "&cx=" + customsearchId + "&key=" + APIkey + "&cr=countryBR")
+exports.retrieveLinks = function(query, customsearchId, APIkey, num){ //monta a mensagem url da pesquisa a ser feita, extrai os dados que queremos do JSON resultante
+	var result = httpGet("https://www.googleapis.com/customsearch/v1?q=" + query + "&cx=" + customsearchId + "&key=" + APIkey + "&cr=countryBR&num=" + num)
 	result = JSON.parse(result)	
 	var resultLinks = []
 	try{
-		for(var i = 0; i < 10; i++)		
-			resultLinks.push(result["items"][i]["link"])
+		for(var i of result["items"])		
+			resultLinks.push(i["link"])
 	}
 	catch(e) {
 		// Captura se o link retornado for nulo(Type Error)
