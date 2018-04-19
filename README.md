@@ -1,7 +1,11 @@
 # Observatorio-google
 
 
-
+##Para instalar rode
+```
+npm install
+```
+(ja instala todas as dependências)
 ## Uso
 ```
 node main_XXX.js
@@ -10,8 +14,4 @@ node main_XXX.js
 ```
 nodejs main_XXX.js
 ```
-Para instalar rode
-```
-npm install
-```
-(ja instala todas as dependências)
+
