@@ -1,7 +1,7 @@
 # Observatorio-google
 
 
-##Para instalar rode
+## Para instalar rode
 ```
 npm install
 ```
