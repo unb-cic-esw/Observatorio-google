@@ -8,10 +8,10 @@ npm install
 (ja instala todas as dependências)
 ## Uso
 ```
-node main_XXX.js
+node app.js
 ```
 ## Para o ubuntu bash no windows
 ```
-nodejs main_XXX.js
+nodejs app.js
 ```
 
