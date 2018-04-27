@@ -1,4 +1,4 @@
-const googleAPI = require('../google_api');
+const googleAPI = require('../api/google_api');
 const googleScraper = require('google');
 
 /**
@@ -24,24 +24,41 @@ var controller = function(persistenceRef, viewRef) {
     }
 
     /**
+     * Get the results only of the API.
+     */
+    module.getAPIResults = function() {
+        persistence.read('listaat', getGoogleAPI);
+    }
+
+    /**
+     * Get the results only of the Scraper.
+     */
+    module.getScraperResults = function() {
+        persistence.read('listaat', getGoogleScraper);
+    }
+
+    /**
      * Request API data for a query.
      * 
      * Arguments:
      *  - query: Query to be made.
      */
     const getGoogleAPI = function(query) {
-        const response = googleAPI.retrieveLinks(query,
+        const response = googleAPI(query,
                 "005182128650059414634%3Acpbzek4imty",
                 "AIzaSyC-6UytV9d7x16YvRzM1j-gdy1W3yTV-9w",
                 10);
-
+        var data = '';
+        
         if (query && response) {
-            persistence.write('_api.txt', query + '\n');
+            data += query + '\n';
 
             response.forEach((currentValue) => {
-                persistence.write('_api.txt', '\t*' + currentValue["title"] + '\n');
-                persistence.write('_api.txt', '\t\t' + currentValue["link"] + '\n');
+                data += '\t*' + currentValue["title"] + '\n';
+                data += '\t\t' + currentValue["link"] + '\n';
             })
+
+            persistence.write('_api.txt', data);
         }
     }
 
@@ -53,9 +70,10 @@ var controller = function(persistenceRef, viewRef) {
      */
     const getGoogleScraper = function(query) {
         googleScraper.resultsPerPage = resultsPerPage;
-        
+        var data = '';
+
         googleScraper(query, function(err, res) {
-            persistence.write('_scraper.txt', query + '\n');
+            data += query + '\n';
 
             if (err) {
                 console.error(err);
@@ -69,9 +87,11 @@ var controller = function(persistenceRef, viewRef) {
                     continue;
                 }
 
-                persistence.write('_scraper.txt', '\t' + link.title + '\n');
-                persistence.write('_scraper.txt', '\t\t' + link.href + '\n');
+                data += '\t' + link.title + '\n'
+                data += '\t\t' + link.href + '\n'
             }
+
+            persistence.write('_scraper.txt', data);
         })
     }
 

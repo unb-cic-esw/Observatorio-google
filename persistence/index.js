@@ -14,10 +14,8 @@ var persistence = function() {
     const resourceDirectory = "../resources/";
     // Current time as string.
     const currentDate = date.toLocaleDateString().replace(/\//g, '-');
-    // Writer of the API file.
-    var writerAPI = null
-    // Writer of the Scraper file.
-    var writerScraper = null
+    // Writer of the file.
+    var writer = null
 
 
     /**
@@ -33,21 +31,10 @@ var persistence = function() {
         createFolder(directory);
         createFolder(directory + currentDate);
 
-        if (!writerAPI) {
-            writerAPI = fs.createWriteStream(directory + currentDate +
-                                          '/' + name, { flags: 'w'});
-        }
-        if (!writerScraper && fileName != '_api.txt') {
-            writerScraper = fs.createWriteStream(directory + currentDate +
-                                                 '/' + name, { flags: 'w'});
-        }
+        writer = fs.createWriteStream(directory + currentDate +
+                                        '/' + name, { flags: 'a+'});
 
-        if (fileName == '_api.txt') {
-            writerAPI.write(data);
-        }
-        else if (fileName == '_scraper.txt') {
-            writerScraper.write(data);
-        }
+        writer.write(data);
     }
 
     /**
