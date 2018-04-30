@@ -15,3 +15,7 @@ node app.js
 nodejs app.js
 ```
 
+## Para rodar os testes
+```
+npm test
+```

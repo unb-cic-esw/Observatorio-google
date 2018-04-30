@@ -77,7 +77,7 @@ var controller = function(persistenceRef, viewRef) {
 
             if (err) {
                 console.error(err);
-                return;
+                return false;
             }
 
             for (var counter = 0; counter < res.links.length; counter++) {
@@ -93,7 +93,11 @@ var controller = function(persistenceRef, viewRef) {
 
             persistence.write('_scraper.txt', data);
         })
+
+        return true;
     }
+
+    module.getGoogleScraper = getGoogleScraper;
 
     return module;
 }

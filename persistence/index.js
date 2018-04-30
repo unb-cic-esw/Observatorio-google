@@ -85,6 +85,8 @@ var persistence = function() {
         }
     }
 
+    module.canOpenFile = canOpenFile;
+
     return module;
 }
 
