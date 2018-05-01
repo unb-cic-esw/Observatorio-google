@@ -1,4 +1,4 @@
-const googleAPI = require('../api/google_api');
+const googleAPI = require('../utils/google_api');
 const googleScraper = require('google');
 
 /**
