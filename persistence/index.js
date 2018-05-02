@@ -70,6 +70,8 @@ var persistence = function() {
             });
         }
     }
+	
+	module.createFolder = createFolder;
 
     /**
      * Checks if the file can be opened.

@@ -6,6 +6,7 @@
   "dependencies": {
     "google": "^2.1.0",
     "npm": "^6.0.0",
+    "package": "^1.0.1",
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {

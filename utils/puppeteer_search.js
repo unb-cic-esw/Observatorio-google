@@ -5,6 +5,28 @@ const persistence = require('../persistence/index')();
 const currentDate = date.toLocaleDateString().replace(/\//g, '-');
 const directory = "./resultados/";
 
+const timeout = async(ms) => {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+* Login into a google account, only works with headless mode off.
+*
+* Arguments:
+* - page: Page where the login must be made.
+* - email: The email of the account to login.
+* - password: The password correspondent to the email.
+*/
+const loginGoogle = async(page, email, password) => {
+	await page.goto('https://accounts.google.com/ServiceLogin');
+	await page.type('#identifierId', email);
+	await page.click('#identifierNext');
+	await timeout(3000);
+	await page.type('#password', password);
+	await page.click('#passwordNext');
+	await timeout(3000);
+}
+
 /**
 * Creates a PDF with the resultant page of the google search of the query.
 * 
@@ -12,21 +34,34 @@ const directory = "./resultados/";
 *  - query: Query to be made.
 */
 exports.pdfSearch = async (query) => {
-	const name = await date.toLocaleDateString() + query;
+	const browser = await puppeteer.launch({
+		headless: false,
+		executablePath: '/usr/bin/google-chrome'
+	});
+	const page = await browser.newPage();
+	
+	try{
+		await loginGoogle(page, "login", "senha");
+	}
+	catch(e){
+		console.log("Login ou senha invalidos");
+	}
+	const baseLink = 'https://www.google.com.br/search?q=';
 
+	await page.goto(baseLink + query);
+	
 	await persistence.createFolder(directory);
 	await persistence.createFolder(directory + currentDate);
 	
-	const browser = await puppeteer.launch({ headless: true});
-	const page = await browser.newPage();
-	const baseLink = 'https://www.google.com/search?client=ubuntu&channel=fs&q=';
-
-	await page.goto(baseLink + query + '&ie=utf-8&oe=utf-8');
-
+	await page.screenshot({
+		path:  directory + currentDate + '/' + date.toLocaleTimeString() + '_' + query + '.png',
+		fullPage : true
+	})
+	/*
 	await page.pdf({
 		path:  directory + currentDate + '/' + date.toLocaleTimeString() + '_' + query + '.pdf',
-		fomat: 'A4'  
 	});
+	*/
 	browser.close();
 };
 

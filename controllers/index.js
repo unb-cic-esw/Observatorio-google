@@ -21,7 +21,7 @@ var controller = function(persistenceRef, viewRef) {
      */
     module.getResults = function() {
         persistence.read('listaat', getGoogleAPI);
-        persistence.read('listaat', getGoogleScraper);
+        persistence.read('listaat', getPuppeteerSearch);
     }
 
     /**
@@ -34,92 +34,91 @@ var controller = function(persistenceRef, viewRef) {
     /**
      * Get the results only of the Scraper.
      */
-    module.getScraperResults = function() {
-        persistence.read('listaat', getGoogleScraper);
-    }
+module.getScraperResults = function() {
+	persistence.read('listaat', getGoogleScraper);
+}
 
-	/**
-     * Get the results only of the Puppeteer.
-     */
-    module.getPuppeteerResults = function() {
-        persistence.read('listaat', getPuppeteerSearch);
-    }
-
-    /**
-     * Request Puppeteer data for a query.
-     * 
-     * Arguments:
-     *  - query: Query to be made.
-     */
-    const getPuppeteerSearch = function(query) {
-    	puppeteerSearch.pdfSearch(query);
-	}
+/**
+ * Get the results only of the Puppeteer.
+ */
+module.getPuppeteerResults = function() {
+	persistence.read('listaat', getPuppeteerSearch);
+}
 
 
+/**
+ * Request Puppeteer data for a query.
+ * 
+ * Arguments:
+ *  - query: Query to be made.
+ */
+const getPuppeteerSearch = function(query) {	
+	puppeteerSearch.pdfSearch(query);
+}
+
+/**
+ * Request API data for a query.
+ * 
+ * Arguments:
+ *  - query: Query to be made.
+ */
+const getGoogleAPI = function(query) {
+	const response = googleAPI(query,
+			"005182128650059414634%3Acpbzek4imty",
+			"AIzaSyC-6UytV9d7x16YvRzM1j-gdy1W3yTV-9w",
+			10);
+	var data = '';
 	
-	/**
-     * Request API data for a query.
-     * 
-     * Arguments:
-     *  - query: Query to be made.
-     */
-    const getGoogleAPI = function(query) {
-        const response = googleAPI(query,
-                "005182128650059414634%3Acpbzek4imty",
-                "AIzaSyC-6UytV9d7x16YvRzM1j-gdy1W3yTV-9w",
-                10);
-        var data = '';
-        
-        if (query && response) {
-            data += query + '\n';
+	if (query && response) {
+		data += query + '\n';
 
-            response.forEach((currentValue) => {
-                data += '\t*' + currentValue["title"] + '\n';
-                data += '\t\t' + currentValue["link"] + '\n';
-            })
+		response.forEach((currentValue) => {
+			data += '\t*' + currentValue["title"] + '\n';
+			data += '\t\t' + currentValue["link"] + '\n';
+		})
 
-            persistence.write('_api.txt', data);
-        }
-    }
+		persistence.write('_api.txt', data);
+	}
+}
 
-    /**
-     * Get the results using scraper for a query.
-     * 
-     * Arguments:
-     *  - query: Query to be made.
-     */
-    const getGoogleScraper = function(query) {
-        googleScraper.resultsPerPage = resultsPerPage;
-        var data = '';
+/**
+ * Get the results using scraper for a query.
+ * 
+ * Arguments:
+ *  - query: Query to be made.
+ */
+const getGoogleScraper = function(query) {
+	googleScraper.resultsPerPage = resultsPerPage;
+	var data = '';
 
-        googleScraper(query, function(err, res) {
-            data += query + '\n';
+	googleScraper(query, function(err, res) {
+		data += query + '\n';
 
-            if (err) {
-                console.error(err);
-                return false;
-            }
+		if (err) {
+			console.error(err);
+			return false;
+		}
 
-            for (var counter = 0; counter < res.links.length; counter++) {
-                const link = res.links[counter];
+		for (var counter = 0; counter < res.links.length; counter++) {
+			const link = res.links[counter];
 
-                if (!link.href) {
-                    continue;
-                }
+			if (!link.href) {
+				continue;
+			}
 
-                data += '\t' + link.title + '\n'
-                data += '\t\t' + link.href + '\n'
-            }
+			data += '\t' + link.title + '\n'
+			data += '\t\t' + link.href + '\n'
+		}
 
-            persistence.write('_scraper.txt', data);
-        })
+		persistence.write('_scraper.txt', data);
+	})
 
-        return true;
-    }
+	return true;
+}
 
-    module.getGoogleScraper = getGoogleScraper;
+module.getGoogleScraper = getGoogleScraper;
 
-    return module;
+return module;
 }
 
 module.exports = controller;
