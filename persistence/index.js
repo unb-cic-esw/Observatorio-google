@@ -61,14 +61,21 @@ var persistence = function() {
      * Arguments:
      *  - folderName: Name of the folder
      */
-    const createFolder = function(folderName) {
+    const createFolder = function(folderName,) {
         if (!fs.existsSync(folderName)) {
             fs.mkdirSync(folderName, 0766, function(err) {
                 if (err) {
                     console.error(err);
+                    return false;
                 }
             });
         }
+
+        return true;
+    }
+
+    const checkFolderExists = function(folderName) {
+        return fs.existsSync(folderName);
     }
 
     /**
@@ -86,6 +93,8 @@ var persistence = function() {
     }
 
     module.canOpenFile = canOpenFile;
+    module.createFolder = createFolder;
+    module.checkFolderExists = checkFolderExists;
 
     return module;
 }

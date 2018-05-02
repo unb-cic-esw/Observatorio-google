@@ -33,4 +33,12 @@ describe('persistence', function() {
         const canOpenFile = persistence().canOpenFile;
         expect(canOpenFile(undefined)).to.equal(false);
     });
+
+    // Tests for createFolder method.
+
+    it('should return true if can create folder', function() {
+        const createFolder = persistence().createFolder;
+        expect(createFolder('testFolder123')).to.equal(true);
+    });
+    
 });

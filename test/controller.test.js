@@ -7,9 +7,9 @@ const controller = require('../controllers/index.js');
  * 
  * TODO: Has to handle asynchronous function.
  */
-describe('controller', function() {
-    it('should return true if query is possible', function() {
-        const getGoogleScraper = controller().getGoogleScraper;
-        // expect(getGoogleScraper('test')).to.equal(true);
-    });
-});
+// describe('controller', function() {
+//     it('should async return true if query is possible', function(done) {
+//         const getGoogleScraper = controller().getGoogleScraper;
+//         expect(getGoogleScraper()).to.equal(true);
+//     });
+// });
