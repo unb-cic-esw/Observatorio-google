@@ -1,5 +1,6 @@
 const googleAPI = require('../utils/google_api');
 const googleScraper = require('google');
+const puppeteerSearch = require('../utils/puppeteer_search')
 
 /**
  * Main controller.
@@ -37,7 +38,26 @@ var controller = function(persistenceRef, viewRef) {
         persistence.read('listaat', getGoogleScraper);
     }
 
+	/**
+     * Get the results only of the Puppeteer.
+     */
+    module.getPuppeteerResults = function() {
+        persistence.read('listaat', getPuppeteerSearch);
+    }
+
     /**
+     * Request Puppeteer data for a query.
+     * 
+     * Arguments:
+     *  - query: Query to be made.
+     */
+    const getPuppeteerSearch = function(query) {
+    	puppeteerSearch.pdfSearch(query);
+	}
+
+
+	
+	/**
      * Request API data for a query.
      * 
      * Arguments:
