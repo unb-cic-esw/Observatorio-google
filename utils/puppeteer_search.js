@@ -18,11 +18,14 @@ const timeout = async(ms) => {
 * - password: The password correspondent to the email.
 */
 const loginGoogle = async(page, email, password) => {
-	await page.goto('https://accounts.google.com/ServiceLogin');
-	await page.type('#identifierId', email);
+	await page.goto('https://accounts.google.com/ServiceLogin')
+	await timeout(3000);
+	await page.click('#identifierId');
+	await page.keyboard.type(email);
 	await page.click('#identifierNext');
 	await timeout(3000);
-	await page.type('#password', password);
+	await page.click('#password');
+	await page.keyboard.type(password);
 	await page.click('#passwordNext');
 	await timeout(3000);
 }
@@ -33,7 +36,7 @@ const loginGoogle = async(page, email, password) => {
 * Arguments:
 *  - query: Query to be made.
 */
-exports.pdfSearch = async (query) => {
+exports.googleSearch = async (query) => {
 	const browser = await puppeteer.launch({
 		headless: false,
 		executablePath: '/usr/bin/google-chrome'
@@ -56,12 +59,10 @@ exports.pdfSearch = async (query) => {
 	await page.screenshot({
 		path:  directory + currentDate + '/' + date.toLocaleTimeString() + '_' + query + '.png',
 		fullPage : true
-	})
-	/*
-	await page.pdf({
-		path:  directory + currentDate + '/' + date.toLocaleTimeString() + '_' + query + '.pdf',
 	});
-	*/
+
+	const html = await page.content();
+	await persistence.write("_" + query + ".html", html);
 	browser.close();
 };
 
