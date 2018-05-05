@@ -44,15 +44,26 @@ var persistence = function() {
      *  - fileName: Name of the file to be written.
      *  - callback: Callback for every line readed.
      */
-    module.read = function(fileName, callback) {
+    module.read = async function(fileName) {
         const path = /*resourceDirectory + */ fileName
 
         if (canOpenFile(path)) {
+            var lines = [];
             const reader = readline.createInterface({
                 input: fs.createReadStream(path)
             });
-            reader.on('line', callback);
+
+            return new Promise(resolve => {
+                reader.on('line', (input) => {
+                    lines.push(input);
+                });
+                reader.on('close', function() {
+                    resolve(lines);
+                });
+            })
         }
+
+        return null;
     }
 
     /**
@@ -61,19 +72,29 @@ var persistence = function() {
      * Arguments:
      *  - folderName: Name of the folder
      */
-    const createFolder = function(folderName,) {
-        if (!fs.existsSync(folderName)) {
-            fs.mkdirSync(folderName, 0766, function(err) {
-                if (err) {
-                    console.error(err);
-                    return false;
-                }
+    const createFolder = async function(folderName) {
+        if (!checkFolderExists(folderName)) {
+            return new Promise(resolve => {
+                fs.mkdirSync(folderName, 0766, function(err) {
+                    if (err) {
+                        console.log(undefined);
+                        console.error(err);
+                        resolve(false);
+                    }
+                    resolve(true);
+                });
             });
         }
 
         return true;
     }
 
+    /**
+     * Check if folder exists.
+     * 
+     * Arguments:
+     *  - folderName: Name of the folder
+     */
     const checkFolderExists = function(folderName) {
         return fs.existsSync(folderName);
     }

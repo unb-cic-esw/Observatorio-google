@@ -20,22 +20,36 @@ var controller = function(persistenceRef, viewRef) {
      * Get the results of the API and Scraper.
      */
     module.getResults = function() {
-        persistence.read('listaat', getGoogleAPI);
-        persistence.read('listaat', getGoogleScraper);
+        getScraperResults();
+        getAPIResults();
     }
 
     /**
      * Get the results only of the API.
      */
-    module.getAPIResults = function() {
-        persistence.read('listaat', getGoogleAPI);
+    const getAPIResults = async function() {
+        const queries = await persistence.read('listaat');
+        var data = '';
+
+        for (var index in queries) {
+            data += await getGoogleAPI(queries[index]);
+        }
+
+        persistence.write('_api.txt', data);
     }
 
     /**
      * Get the results only of the Scraper.
      */
-    module.getScraperResults = function() {
-        persistence.read('listaat', getGoogleScraper);
+    const getScraperResults = async function() {
+        const queries = await persistence.read('listaat');
+        var data = '';
+
+        for (var index in queries) {
+            data += await getGoogleScraper(queries[index]);
+        }
+
+        persistence.write('_scraper.txt', data);
     }
 
 	/**
@@ -55,69 +69,73 @@ var controller = function(persistenceRef, viewRef) {
     	puppeteerSearch.pdfSearch(query);
 	}
 
-
-	
 	/**
      * Request API data for a query.
      * 
      * Arguments:
      *  - query: Query to be made.
      */
-    const getGoogleAPI = function(query) {
+    const getGoogleAPI = async function(query) {
         const response = googleAPI(query,
                 "005182128650059414634%3Acpbzek4imty",
                 "AIzaSyC-6UytV9d7x16YvRzM1j-gdy1W3yTV-9w",
                 10);
         var data = '';
         
-        if (query && response) {
-            data += query + '\n';
+        return new Promise(resolve => {
+            if (query && response) {
+                data += query + '\n';
+    
+                response.forEach((currentValue) => {
+                    data += '\t*' + currentValue["title"] + '\n';
+                    data += '\t\t' + currentValue["link"] + '\n';
+                })
+    
+                data += '\n';
+            }
 
-            response.forEach((currentValue) => {
-                data += '\t*' + currentValue["title"] + '\n';
-                data += '\t\t' + currentValue["link"] + '\n';
-            })
-
-            persistence.write('_api.txt', data);
-        }
+            resolve(data);
+        });
     }
 
     /**
-     * Get the results using scraper for a query.
-     * 
-     * Arguments:
-     *  - query: Query to be made.
-     */
-    const getGoogleScraper = function(query) {
-        googleScraper.resultsPerPage = resultsPerPage;
-        var data = '';
+	 * Get the results using scraper for a query.
+	 * 
+	 * Arguments:
+	 *  - query: Query to be made.
+	 */
+	const getGoogleScraper = async function(query) {
+		googleScraper.resultsPerPage = resultsPerPage;
+		var data = '';
 
-        googleScraper(query, function(err, res) {
-            data += query + '\n';
-
-            if (err) {
-                console.error(err);
-                return false;
-            }
-
-            for (var counter = 0; counter < res.links.length; counter++) {
-                const link = res.links[counter];
-
-                if (!link.href) {
-                    continue;
+        return new Promise(resolve => {
+            googleScraper(query, function(err, res) {
+                data += query + '\n';
+    
+                if (err) {
+                    console.error(err);
+                    return false;
+                }
+    
+                for (var counter = 0; counter < res.links.length; counter++) {
+                    const link = res.links[counter];
+    
+                    if (!link.href) {
+                        continue;
+                    }
+    
+                    data += '\t' + link.title + '\n'
+                    data += '\t\t' + link.href + '\n'
                 }
 
-                data += '\t' + link.title + '\n'
-                data += '\t\t' + link.href + '\n'
-            }
-
-            persistence.write('_scraper.txt', data);
-        })
-
-        return true;
-    }
+                data += '\n';
+                resolve(data);
+            })
+        });
+	}
 
     module.getGoogleScraper = getGoogleScraper;
+    module.getAPIResults = getAPIResults;
 
     return module;
 }

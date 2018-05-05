@@ -5,5 +5,11 @@ package-lock.json
 *.json
 resultados
 
+# Test Folders
+testFolder
+123
+@#$
+testFolder123
+
 # Mac Files
 .DS_Store
