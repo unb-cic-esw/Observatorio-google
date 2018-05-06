@@ -38,8 +38,9 @@ const loginGoogle = async(page, email, password) => {
 */
 exports.googleSearch = async (query) => {
 	const browser = await puppeteer.launch({
-		headless: false,
-		executablePath: '/usr/bin/google-chrome'
+		//headless: false,
+		executablePath: '/usr/bin/google-chrome',
+		args: ['--no-sandbox', '--disable-setuid-sandbox']
 	});
 	const page = await browser.newPage();
 	
