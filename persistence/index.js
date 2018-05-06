@@ -77,12 +77,11 @@ var persistence = function() {
             return new Promise(resolve => {
                 fs.mkdirSync(folderName, 0766, function(err) {
                     if (err) {
-                        console.log(undefined);
                         console.error(err);
                         resolve(false);
                     }
-                    resolve(true);
                 });
+                resolve(true);
             });
         }
 
