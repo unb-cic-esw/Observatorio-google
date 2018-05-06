@@ -77,8 +77,8 @@ exports.googleSearch = async (page, query, output_format) => {
 */
 exports.newBrowser = async () => {
 	return await puppeteer.launch({
-		headless: false,
+		headless: false
 		// executablePath: '/usr/bin/google-chrome'
-		args: ['--no-sandbox', '--disable-setuid-sandbox']
+		//args: ['--no-sandbox', '--disable-setuid-sandbox']
 	});
 }
