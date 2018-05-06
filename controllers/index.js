@@ -55,18 +55,23 @@ var controller = function(persistenceRef, viewRef) {
 	/**
 	 * Get the results only of the Puppeteer.
 	 */
-	module.getPuppeteerResults = function() {
-		persistence.read('listaat', getPuppeteerSearch);
-	}
+	module.getPuppeteerResults = async function() {
+        const queries = await persistence.read('listaat');
+		const browser = await puppeteerSearch.newBrowser();
+		const page = await browser.newPage();
 
-	/**
-	 * Request Puppeteer data for a query.
-	 * 
-	 * Arguments:
-	 *  - query: Query to be made.
-	 */
-	const getPuppeteerSearch = function(query) {	
-		puppeteerSearch.googleSearch(query);
+		try{
+			await puppeteerSearch.loginGoogle(page, "login", "senha");
+		}
+		catch(e) {
+			console.log("Login ou senha invalidos");
+		}
+		for (let query of queries) {
+			let data = await puppeteerSearch.googleSearch(page, query);
+			persistence.write('_pup_' + query + '.html', data);
+		}
+
+		browser.close();
 	}
 
 	/**
