@@ -61,7 +61,7 @@ var controller = function(persistenceRef, viewRef) {
 		const page = await browser.newPage();
 
 		try{
-			await puppeteerSearch.loginGoogle(page, "login", "senha");
+			await puppeteerSearch.loginGoogle(page, process.argv[3], process.argv[4]);
 		}
 		catch(e) {
 			console.log("Login ou senha invalidos");
