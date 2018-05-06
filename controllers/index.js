@@ -67,8 +67,12 @@ var controller = function(persistenceRef, viewRef) {
 			console.log("Login ou senha invalidos");
 		}
 		for (let query of queries) {
-			let data = await puppeteerSearch.googleSearch(page, query);
-			persistence.write('_pup_' + query + '.html', data);
+            // Pesquisa resultando nos links em '.txt'
+			let txt_data = await puppeteerSearch.googleSearch(page, query, "txt");
+            persistence.write('_pup_' + query + '.txt', txt_data);
+            // Pesquisa resultando nos html puro da página pesquisada
+            let html_data = await puppeteerSearch.googleSearch(page, query, "html");
+            persistence.write('_pup_' + query + '.html', html_data);
 		}
 
 		browser.close();
