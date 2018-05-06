@@ -97,6 +97,8 @@ var persistence = function() {
     const checkFolderExists = function(folderName) {
         return fs.existsSync(folderName);
     }
+	
+	module.createFolder = createFolder;
 
     /**
      * Checks if the file can be opened.

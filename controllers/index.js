@@ -53,20 +53,20 @@ var controller = function(persistenceRef, viewRef) {
     }
 
 	/**
-     * Get the results only of the Puppeteer.
-     */
-    module.getPuppeteerResults = function() {
-        persistence.read('listaat', getPuppeteerSearch);
-    }
+	 * Get the results only of the Puppeteer.
+	 */
+	module.getPuppeteerResults = function() {
+		persistence.read('listaat', getPuppeteerSearch);
+	}
 
-    /**
-     * Request Puppeteer data for a query.
-     * 
-     * Arguments:
-     *  - query: Query to be made.
-     */
-    const getPuppeteerSearch = function(query) {
-    	puppeteerSearch.pdfSearch(query);
+	/**
+	 * Request Puppeteer data for a query.
+	 * 
+	 * Arguments:
+	 *  - query: Query to be made.
+	 */
+	const getPuppeteerSearch = function(query) {	
+		puppeteerSearch.googleSearch(query);
 	}
 
 	/**

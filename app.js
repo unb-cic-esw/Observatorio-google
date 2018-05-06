@@ -4,4 +4,5 @@ const controller = require('./controllers/index.js');
 /**
  * Execute the requests.
  */
-controller(persistence(), undefined).getResults();
+// controller(persistence(), undefined).getResults();
+controller(persistence(), undefined).getPuppeteerResults();

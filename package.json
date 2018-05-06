@@ -7,6 +7,8 @@
     "google": "^2.1.0",
     "npm": "^6.0.0",
     "puppeteer": "^1.3.0",
+    "package": "^1.0.1",
+    "puppeteer": "git+https://github.com/GoogleChrome/puppeteer.git",
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
