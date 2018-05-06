@@ -36,7 +36,23 @@ exports.loginGoogle = async(page, email, password) => {
 * Arguments:
 *  - query: Query to be made.
 */
+
 exports.googleSearch = async (page, query, output_format) => {
+
+	const browser = await puppeteer.launch({
+		//headless: false,
+		//executablePath: '/usr/bin/google-chrome',
+		args: ['--no-sandbox', '--disable-setuid-sandbox']
+	});
+	const page = await browser.newPage();
+	
+	try{
+		await loginGoogle(page, "login", "senha");
+	}
+	catch(e){
+		console.log("Login ou senha invalidos");
+	}
+
 	const baseLink = 'https://www.google.com.br/search?q=';
 
 	await page.goto(baseLink + query);
