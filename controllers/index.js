@@ -145,6 +145,7 @@ var controller = function(persistenceRef, viewRef) {
 
     module.getGoogleScraper = getGoogleScraper;
     module.getAPIResults = getAPIResults;
+    module.getScraperResults = getScraperResults;
 
     return module;
 }

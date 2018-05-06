@@ -9,9 +9,7 @@ const controller = require('./controllers/index.js');
  */
 const tipoPesquisa = process.argv[2];
 
-console.log(tipoPesquisa);
-
-if (tipoPesquisa == 'scrapper') {
+if (tipoPesquisa == 'scraper') {
 	controller(persistence(), undefined).getScraperResults();
 }
 else if (tipoPesquisa == 'api') {
@@ -21,5 +19,5 @@ else if (tipoPesquisa == 'puppeteer') {
 	controller(persistence(), undefined).getPuppeteerResults();
 }
 else {
-	console.log ('selecione um tipo de pesquisa (scrapper, api ou puppeteer)');
+	console.log ('selecione um tipo de pesquisa (scraper, api ou puppeteer)');
 }
