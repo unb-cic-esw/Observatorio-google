@@ -55,24 +55,22 @@ var controller = function(persistenceRef, viewRef) {
 	/**
 	 * Get the results only of the Puppeteer.
 	 */
-	module.getPuppeteerResults = async function() {
+	module.getPuppeteerResults = async function(cookieFile) {
         const queries = await persistence.read('listaat');
 		const browser = await puppeteerSearch.newBrowser();
 		const page = await browser.newPage();
 
 		try{
-			await puppeteerSearch.loginGoogle(page, "login", "senha");
+			await puppeteerSearch.loadCookies(page, cookieFile);
 		}
 		catch(e) {
 			console.log("Login ou senha invalidos");
 		}
 		for (let query of queries) {
             // Pesquisa resultando nos links em '.txt'
-			let txt_data = await puppeteerSearch.googleSearch(page, query, "txt");
-            persistence.write('_pup_' + query + '.txt', txt_data);
-            // Pesquisa resultando nos html puro da página pesquisada
-            let html_data = await puppeteerSearch.googleSearch(page, query, "html");
-            persistence.write('_pup_' + query + '.html', html_data);
+			let data = await puppeteerSearch.googleSearch(page, query);
+            persistence.write('_pup_' + query + '.txt', data['txt']);
+            persistence.write('_pup_' + query + '.html', data['html']);
 		}
 
 		browser.close();
