@@ -52,31 +52,33 @@ var controller = function(persistenceRef, viewRef) {
         persistence.write('_scraper.txt', data);
     }
 
-	/**
-	 * Get the results only of the Puppeteer.
-	 */
-	module.getPuppeteerResults = async function(cookieFile) {
+    /**
+     * Get the results only of the Puppeteer.
+     */
+    module.getPuppeteerResults = async function() {
         const queries = await persistence.read('listaat');
-		const browser = await puppeteerSearch.newBrowser();
-		const page = await browser.newPage();
+        const browser = await puppeteerSearch.newBrowser();
+        const page = await browser.newPage();
 
-		try{
-			await puppeteerSearch.loadCookies(page, cookieFile);
-		}
-		catch(e) {
-			console.log("Login ou senha invalidos");
-		}
-		for (let query of queries) {
+        try{
+            await puppeteerSearch.loginGoogle(page, process.argv[3], process.argv[4]);
+        }
+        catch(e) {
+            console.log("Login ou senha invalidos");
+        }
+        for (let query of queries) {
             // Pesquisa resultando nos links em '.txt'
-			let data = await puppeteerSearch.googleSearch(page, query);
-            persistence.write('_pup_' + query + '.txt', data['txt']);
-            persistence.write('_pup_' + query + '.html', data['html']);
-		}
+            let txt_data = await puppeteerSearch.googleSearch(page, query, "txt");
+            persistence.write('_pup_' + query + '.txt', txt_data);
+            // Pesquisa resultando nos html puro da página pesquisada
+            let html_data = await puppeteerSearch.googleSearch(page, query, "html");
+            persistence.write('_pup_' + query + '.html', html_data);
+        }
 
-		browser.close();
-	}
+        browser.close();
+    }
 
-	/**
+    /**
      * Request API data for a query.
      * 
      * Arguments:
@@ -106,14 +108,14 @@ var controller = function(persistenceRef, viewRef) {
     }
 
     /**
-	 * Get the results using scraper for a query.
-	 * 
-	 * Arguments:
-	 *  - query: Query to be made.
-	 */
-	const getGoogleScraper = async function(query) {
-		googleScraper.resultsPerPage = resultsPerPage;
-		var data = '';
+     * Get the results using scraper for a query.
+     * 
+     * Arguments:
+     *  - query: Query to be made.
+     */
+    const getGoogleScraper = async function(query) {
+        googleScraper.resultsPerPage = resultsPerPage;
+        var data = '';
 
         return new Promise(resolve => {
             googleScraper(query, function(err, res) {
@@ -139,7 +141,7 @@ var controller = function(persistenceRef, viewRef) {
                 resolve(data);
             })
         });
-	}
+    }
 
     module.getGoogleScraper = getGoogleScraper;
     module.getAPIResults = getAPIResults;
