@@ -12,7 +12,7 @@ describe('persistence canOpenFile tests', function() {
 
     it('should return true if file passed exists', function() {
         const canOpenFile = persistence().canOpenFile;
-        expect(canOpenFile('./listaat')).to.equal(true);
+        expect(canOpenFile('./actors/actors.json')).to.equal(true);
     });
 
     it('should return false if file passed don\'t exists', function() {
@@ -101,10 +101,10 @@ describe('persistence createFolder tests', function() {
  */
  describe('persistence read tests', function() {
 
-    it('should return a non-empty array for listaat', async function() {
+    it('should return a non-empty array for actors/actors.json', async function() {
         const read = persistence().read;
-        const result = await read('listaat');
-        expect(result.length).to.above(0);
+        const result = await read('actors/actors.json');
+        expect(typeof result == 'object');
     });
 
     it('should return null for file that not exist', async function() {

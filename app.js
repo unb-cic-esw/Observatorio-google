@@ -1,5 +1,7 @@
 const persistence = require('./persistence/index.js');
-const controller = require('./controllers/index.js');
+const googlePuppeteer = require('./controllers/puppeteerMain.js');
+const googleApi = require('./controllers/apiMain.js');
+const googleScrapper = require('./controllers/scraperMain.js');
 
 /**
  * Execute the requests.
@@ -10,13 +12,13 @@ const controller = require('./controllers/index.js');
 const tipoPesquisa = process.argv[2];
 
 if (tipoPesquisa == 'scraper') {
-	controller(persistence(), undefined).getScraperResults();
+	googleScrapper.getScraperResults(persistence());
 }
 else if (tipoPesquisa == 'api') {
-	controller(persistence(), undefined).getAPIResults();
+	googleApi.getAPIResults(persistence());
 }
 else if (tipoPesquisa == 'puppeteer') {
-	controller(persistence(), undefined).getPuppeteerResults();
+	googlePuppeteer.getPuppeteerResults(persistence());
 }
 else {
 	console.log ('selecione um tipo de pesquisa (scraper, api ou puppeteer)');

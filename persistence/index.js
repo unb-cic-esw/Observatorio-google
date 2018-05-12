@@ -5,9 +5,9 @@ const date = new Date();
 /**
  * Persistence module
  */
-var persistence = function() {
+let persistence = function() {
     // Public methods of the module.
-    var module = {};
+    let module = {};
     // Directory of result folder.
     const directory = "./resultados/";
     // Directory of resources.
@@ -15,7 +15,7 @@ var persistence = function() {
     // Current time as string.
     const currentDate = date.toLocaleDateString().replace(/\//g, '-');
     // Writer of the file.
-    var writer = null
+    let writer = null
 
 
     /**
@@ -25,14 +25,15 @@ var persistence = function() {
      *  - fileName: Name of the file to be written.
      *  - data: Data to be written.
      */
-    module.write = function(fileName, data) {
-        const name = date.toLocaleTimeString() + fileName;
+    module.write = function(name, extension, data) {
+        name = name.replace(/ /g, '_');
+        const fileName = date.toLocaleTimeString() + '_' + name + extension;
 
         createFolder(directory);
         createFolder(directory + currentDate);
+        createFolder(directory + currentDate + '/' + name);
 
-        writer = fs.createWriteStream(directory + currentDate +
-                                        '/' + name, { flags: 'a+'});
+        writer = fs.createWriteStream(directory + currentDate + '/' + name + '/' + fileName, { flags: 'a+'});
 
         writer.write(data);
     }
@@ -42,25 +43,12 @@ var persistence = function() {
      * 
      * Arguments:
      *  - fileName: Name of the file to be written.
-     *  - callback: Callback for every line readed.
      */
     module.read = async function(fileName) {
         const path = /*resourceDirectory + */ fileName
 
         if (canOpenFile(path)) {
-            var lines = [];
-            const reader = readline.createInterface({
-                input: fs.createReadStream(path)
-            });
-
-            return new Promise(resolve => {
-                reader.on('line', (input) => {
-                    lines.push(input);
-                });
-                reader.on('close', function() {
-                    resolve(lines);
-                });
-            })
+            return JSON.parse(fs.readFileSync(fileName, 'utf8'));
         }
 
         return null;
