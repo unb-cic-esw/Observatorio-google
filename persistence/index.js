@@ -27,11 +27,23 @@ let persistence = function() {
      */
     module.write = function(name, extension, data) {
         name = name.replace(/ /g, '_');
-        const fileName = date.toLocaleTimeString() + '_' + name + extension;
+        const fileName = name + extension;
 
         createFolder(directory);
         createFolder(directory + currentDate);
         createFolder(directory + currentDate + '/' + name);
+
+        if(extension == '.json'){
+            let prevData = [];
+            if(canOpenFile(directory + currentDate + '/' + name + '/' + fileName)){
+                prevData.push(module.read(directory + currentDate + '/' + name + '/' + fileName));
+                console.log(prevData);
+                //return;
+            }
+            data = {'time' : date.toLocaleTimeString(), 'data' : JSON.parse(data)};
+            prevData.push(data);
+            data = JSON.stringify(prevData);
+        }
 
         writer = fs.createWriteStream(directory + currentDate + '/' + name + '/' + fileName, { flags: 'a+'});
 
