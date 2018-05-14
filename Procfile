@@ -1,1 +1,1 @@
-web: python -m web.main
+web: python -m main
