@@ -3,7 +3,29 @@ from html.parser import HTMLParser
 
 requirement = []
 
-class HighLevelReq() :
+class TopStoriesLink() :
+	def __init__(self):
+		self.tags = set()
+		self.tags.add('g-inner-card')
+		self.nome = 'link Top Stories'
+		self.gflag = False
+		self.dados = []
+
+	def shandletag(self, tagin, attrs):
+		if self.gflag:
+			if tagin == 'a':
+				self.dados.append(attrs[0]);
+			self.gflag = False
+		elif tagin in self.tags:
+			self.gflag = True
+
+	def ehandletag(self, tagin):
+		return
+
+	def shandledata(self, data):
+		return
+
+class TopStoriesTitle() :
 	def __init__(self):
 		self.tags = set()
 		self.tags.add('div')
@@ -55,7 +77,8 @@ class MyParser(HTMLParser):
 		for req in requirement:
 			req.shandledata(data)
 
-requirement.append(HighLevelReq())
+requirement.append(TopStoriesTitle())
+requirement.append(TopStoriesLink())
 
 parser = MyParser()
 
