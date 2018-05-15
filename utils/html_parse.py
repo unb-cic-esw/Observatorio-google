@@ -1,64 +1,84 @@
 from html.parser import HTMLParser
 
 
-lista = []
+requirement = []
 
+class TopStoriesLink() :
+	def __init__(self):
+		self.tags = set()
+		self.tags.add('g-inner-card')
+		self.nome = 'link Top Stories'
+		self.gflag = False
+		self.dados = []
 
-tags = set()
+	def shandletag(self, tagin, attrs):
+		if self.gflag:
+			if tagin == 'a':
+				self.dados.append(attrs[0]);
+			self.gflag = False
+		elif tagin in self.tags:
+			self.gflag = True
 
-tags.add('h3')
-tags.add('a')
-tags.add('div')
+	def ehandletag(self, tagin):
+		return
 
+	def shandledata(self, data):
+		return
 
-atributos = set()
-atributos.add(('style','-webkit-line-clamp:4;height:5.5em'))
+class TopStoriesTitle() :
+	def __init__(self):
+		self.tags = set()
+		self.tags.add('div')
+		self.nome = 'Titulo Top Stories'
+		self.flag = False
+		self.atributos = set()
+		self.atributos.add(('style','-webkit-line-clamp:4;height:5.5em'))
+		self.dados = []
 
-dados = []
+	def shandletag(self, tagin, attrs):
+		if tagin in self.tags:
+			aux=[tagin]
+			for attr in attrs:
+				if attr in self.atributos:
+					aux += [attr]
+			if len(aux) > 1:
+				self.flag = True
 
-class HighLevelReq() :
-    def __init__(self):
-        self.tag = 'div'
-        self.nome = 'resultado top stories'
-        self.flag = False
-        self.atributos = set()
-        self.atributos.add(('style','-webkit-line-clamp:4;height:5.5em'))
+	def ehandletag(self, tagin):
+		return
 
-    def checkval(self, attrs):
-        aux=[self.tag]
-        for attr in attrs:
-            if attr in self.atributos:
-                aux += [attr]
-        if len(aux) > 1:
-            lista.append(tuple(aux))
-            self.flag = True
+	def shandledata(self, data):
+		if self.checkflag():
+			self.dados.append(data)
 
-    def checkflag(self):
-    	if self.flag:
-    		self.flag=False
-    		return True
-    	else:
-    		return self.flag
+	def checkflag(self):
+		if self.flag:
+			self.flag=False
+			return True
+		else:
+			return self.flag
 
 class MyParser(HTMLParser):
 
     
-    def __init__(self):
-        self.flag = False
-        super(MyParser,self).__init__()
-        self.requirement = HighLevelReq()
+	def __init__(self):
+		self.flag = False
+		super(MyParser,self).__init__()
 
-    def handle_starttag(self, tag, attrs):
-        if tag in tags:
-        	self.requirement.checkval(attrs)
+	def handle_starttag(self, tag, attrs):
+		for req in requirement:
+			req.shandletag(tag, attrs)
 
-    def handle_endtag(self, tag):
-        print("Encountered an end tag :", tag)
+	def handle_endtag(self, tag):
+		for req in requirement:
+			req.ehandletag(tag)
 
-    def handle_data(self, data):
-        if self.requirement.checkflag():
-            dados.append(data)
+	def handle_data(self, data):
+		for req in requirement:
+			req.shandledata(data)
 
+requirement.append(TopStoriesTitle())
+requirement.append(TopStoriesLink())
 
 parser = MyParser()
 
@@ -68,6 +88,7 @@ with open("../teste.html") as f:
 
 # for registro in lista:
 #     print(registro)
-
-for dado in dados:
-    print(dado)
+for req in requirement:
+	print (req.nome + ':')
+	for dado in req.dados:
+		print(dado)
