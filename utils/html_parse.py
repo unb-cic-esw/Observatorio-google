@@ -3,6 +3,72 @@ from html.parser import HTMLParser
 
 requirement = []
 
+class ResultTitle() :
+	def __init__(self):
+		self.nome = 'Titulo Resultado'
+		self.h3flag = False
+		self.dflag=False
+		self.dados = []
+
+	def shandletag(self, tagin, attrs):
+		if self.h3flag:
+			if tagin == 'a':
+				if attrs[0][0]=='href':
+					self.dflag=True
+			self.h3flag=False
+			self.rcflag=False
+		else:
+			if tagin == 'h3':
+				for attr in attrs:
+					if attr == ('class', 'r'):
+						self.h3flag = True
+					else:
+						self.rcflag = False
+			else:
+				self.rcflag = False
+
+	def ehandletag(self, tagin):
+		return
+
+	def shandledata(self, data):
+		if self.dflag:
+			self.dados.append(data);
+			self.dflag=False
+
+	def checkflag(self):
+		return
+
+class ResultLink() :
+	def __init__(self):
+		self.nome = 'link Resultado'
+		self.h3flag = False
+		self.dados = []
+
+	def shandletag(self, tagin, attrs):
+		if self.h3flag:
+			if tagin == 'a':
+				if attrs[0][0]=='href':
+					self.dados.append(attrs[0][1]);
+			self.h3flag=False
+			self.rcflag=False
+		else:
+			if tagin == 'h3':
+				for attr in attrs:
+					if attr == ('class', 'r'):
+						self.h3flag = True
+					else:
+						self.rcflag = False
+			else:
+				self.rcflag = False
+
+	def ehandletag(self, tagin):
+		return
+
+	def shandledata(self, data):
+		return
+
+	def checkflag(self):
+		return
 
 class TopStoriesLink() :
 	def __init__(self):
@@ -15,7 +81,7 @@ class TopStoriesLink() :
 	def shandletag(self, tagin, attrs):
 		if self.gflag:
 			if tagin == 'a':
-				self.dados.append(attrs[0][1])
+				self.dados.append(attrs[0][1]);
 			self.gflag = False
 		elif tagin in self.tags:
 			self.gflag = True
@@ -80,6 +146,8 @@ class MyParser(HTMLParser):
 
 requirement.append(TopStoriesTitle())
 requirement.append(TopStoriesLink())
+requirement.append(ResultLink())
+requirement.append(ResultTitle())
 
 parser = MyParser()
 
