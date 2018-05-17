@@ -1,9 +1,10 @@
 node_modules/
 package-lock.json
 .idea
+resultados/
 *.txt
 *.json
-resultados
+resultados/2018-5-10/
 
 # Test Folders
 testFolder

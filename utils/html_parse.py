@@ -32,7 +32,7 @@ class ResultTitle() :
 
 	def shandledata(self, data):
 		if self.dflag:
-			self.dados.append(data);
+			self.dados.append(data)
 			self.dflag=False
 
 	def checkflag(self):
@@ -48,7 +48,7 @@ class ResultLink() :
 		if self.h3flag:
 			if tagin == 'a':
 				if attrs[0][0]=='href':
-					self.dados.append(attrs[0][1]);
+					self.dados.append(attrs[0][1])
 			self.h3flag=False
 			self.rcflag=False
 		else:
@@ -81,7 +81,7 @@ class TopStoriesLink() :
 	def shandletag(self, tagin, attrs):
 		if self.gflag:
 			if tagin == 'a':
-				self.dados.append(attrs[0][1]);
+				self.dados.append(attrs[0][1])
 			self.gflag = False
 		elif tagin in self.tags:
 			self.gflag = True
