@@ -226,7 +226,7 @@ requirement.append(SubResultLink())
 
 parser = MyParser()
 
-with open("../resultados/2018-5-10/outro_outro_html.html") as f:
+with open("../teste.html") as f:
     parser.feed(f.read())
 
 
@@ -234,4 +234,12 @@ with open("../resultados/2018-5-10/outro_outro_html.html") as f:
 #     print(registro)
 for req in requirement:
 	dictoutput[req.nome] = req.dados
-print(dictoutput)
+json_string = json.dumps(dictoutput)
+filename = "../teste.json"
+ftry = open(filename,"w+")
+
+# If the file name exists, write a JSON string into the file.
+if filename:
+    # Writing JSON data
+    with ftry as f:
+        json.dump(json_string, f)
