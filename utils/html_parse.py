@@ -3,20 +3,91 @@ from html.parser import HTMLParser
 
 requirement = []
 
+class SubResultTitle():
+	def __init__(self):
+		self.nome = 'Titulo SubResultado'
+		self.data_flag = False
+		self.dados = []
+		self.lista = ["table",
+						"tr",
+						"td",
+						"div",
+						"span",
+						"h3",
+						"a",
+						"div",
+						"div",
+						"br"]
+		self.estado = 0
+
+	def shandletag(self, tagin, attrs):
+		if tagin == self.lista[self.estado]:
+			if self.estado == 6:
+				self.data_flag = True
+			self.estado += 1
+			if self.estado >= len(self.lista):
+				self.estado = 2			
+		else:
+			self.estado = 0
+
+	def ehandletag(self, tagin):
+		if tagin == "tr" and self.estado > 0:
+			self.estado = 1
+
+	def shandledata(self, data):
+		if self.data_flag:
+			self.dados.append(data)
+			self.data_flag = False
+
+
+class SubResultLink():
+	def __init__(self):
+		self.nome = 'Titulo SubResultado'
+		self.dados = []
+		self.lista = [
+						'table',
+						'tr',
+						'td',
+						'div',
+						'span',
+						'h3',
+						'a',
+						'div',
+						'div',
+						'br']
+		self.estado = 0
+
+	def shandletag(self, tagin, attrs):
+		if tagin == self.lista[self.estado]:
+			if self.estado == 6:
+				self.dados.append(attrs[1][1])
+			self.estado += 1
+			if self.estado >= len(self.lista):
+				self.estado = 2			
+		else:
+			self.estado = 0
+
+	def ehandletag(self, tagin):
+		if tagin == "tr" and self.estado > 0:
+			self.estado = 1
+
+	def shandledata(self, data):
+		pass
+
 class ResultTitle() :
 	def __init__(self):
 		self.nome = 'Titulo Resultado'
 		self.h3flag = False
-		self.dflag=False
+		self.dflag = False
 		self.dados = []
 
 	def shandletag(self, tagin, attrs):
 		if self.h3flag:
 			if tagin == 'a':
-				if attrs[0][0]=='href':
-					self.dflag=True
-			self.h3flag=False
-			self.rcflag=False
+				if attrs[0][0] == 'href':
+					self.dflag = True
+			self.h3flag = False
+			self.rcflag = False
 		else:
 			if tagin == 'h3':
 				for attr in attrs:
@@ -33,7 +104,7 @@ class ResultTitle() :
 	def shandledata(self, data):
 		if self.dflag:
 			self.dados.append(data)
-			self.dflag=False
+			self.dflag = False
 
 	def checkflag(self):
 		return
@@ -49,8 +120,8 @@ class ResultLink() :
 			if tagin == 'a':
 				if attrs[0][0]=='href':
 					self.dados.append(attrs[0][1])
-			self.h3flag=False
-			self.rcflag=False
+			self.h3flag = False
+			self.rcflag = False
 		else:
 			if tagin == 'h3':
 				for attr in attrs:
@@ -148,10 +219,12 @@ requirement.append(TopStoriesTitle())
 requirement.append(TopStoriesLink())
 requirement.append(ResultLink())
 requirement.append(ResultTitle())
+requirement.append(SubResultTitle())
+requirement.append(SubResultLink())
 
 parser = MyParser()
 
-with open("../resultados/2018-5-10/teste.html") as f:
+with open("../resultados/2018-5-10/outro_outro_html.html") as f:
     parser.feed(f.read())
 
 
@@ -160,4 +233,5 @@ with open("../resultados/2018-5-10/teste.html") as f:
 for req in requirement:
 	print (req.nome + ':')
 	for dado in req.dados:
-		print(dado)
+
+		print("-\t" + str(dado))
