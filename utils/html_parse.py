@@ -1,7 +1,9 @@
 from html.parser import HTMLParser
+import json
 
 
 requirement = []
+dictoutput = {}
 
 class SubResultTitle():
 	def __init__(self):
@@ -231,7 +233,5 @@ with open("../resultados/2018-5-10/outro_outro_html.html") as f:
 # for registro in lista:
 #     print(registro)
 for req in requirement:
-	print (req.nome + ':')
-	for dado in req.dados:
-
-		print("-\t" + str(dado))
+	dictoutput[req.nome] = req.dados
+print(dictoutput)
