@@ -1,6 +1,10 @@
+import boto3
 from flask import Flask, jsonify
 import json
 import os
+
+s3 = boto3.resource('s3')
+bucket = s3.Bucket('timegoogle')
 
 app = Flask(__name__)
 
@@ -15,9 +19,12 @@ def actors():
 
 @app.route('/<date>/<actor>/all', methods = ['GET'])
 def list_links(date, actor):
-	fileName = 'resultados/' + date + '/pup_' + actor + '/pup_' + actor + '.json'
-	with open(fileName) as data:
-		return jsonify(json.load(data))
+	fileName = './resultados/' + date + '/pup_' + actor + '/pup_' + actor + '.json'
+	data = ""
+	for obj in bucket.objects.all():
+		if(obj.key == fileName):
+			data = obj.get()['Body'].read().decode('utf8')
+	return jsonify(json.loads(data))
 
 port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port=port, debug=True)

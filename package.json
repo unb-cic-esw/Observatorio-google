@@ -12,6 +12,7 @@
     "package": "^1.0.1",
     "pg": "^7.4.3",
     "puppeteer": "git+https://github.com/GoogleChrome/puppeteer.git",
+    "python-shell": "^0.5.0",
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {

@@ -33,21 +33,32 @@ let persistence = function() {
         createFolder(directory + currentDate);
         createFolder(directory + currentDate + '/' + name);
 
+        const fileDest = directory + currentDate + '/' + name + '/' + fileName;
+
+        writer = fs.createWriteStream(fileDest, { flags: 'a+'});
+        
         if(extension == '.json'){
-            let prevData = [];
-            if(canOpenFile(directory + currentDate + '/' + name + '/' + fileName)){
-                prevData.push(module.read(directory + currentDate + '/' + name + '/' + fileName));
-                console.log(prevData);
-                //return;
-            }
-            data = {'time' : date.toLocaleTimeString(), 'data' : JSON.parse(data)};
-            prevData.push(data);
-            data = JSON.stringify(prevData);
+            data = JSON.parse(data);
+            data = {'time' : date.toLocaleTimeString(), 'data' : data};
+            data = JSON.stringify(data);
         }
-
-        writer = fs.createWriteStream(directory + currentDate + '/' + name + '/' + fileName, { flags: 'a+'});
-
+        
         writer.write(data);
+
+        if(extension == '.json'){
+            var PythonShell = require('python-shell');
+            var pyshell = new PythonShell('./persistence/s3_upFile.py');
+
+            pyshell.send(fileDest);
+
+            pyshell.on('message', function (message) {
+              console.log(message);
+            });
+            
+            pyshell.end(function (err,code,signal) {
+              if (err) throw err;
+            });
+        }
     }
 
     /**
