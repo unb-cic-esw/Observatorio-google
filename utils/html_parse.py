@@ -1,9 +1,98 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from html.parser import HTMLParser
 import json
 
 
 requirement = []
 dictoutput = {}
+
+
+class AdPreview():
+	def __init__(self):
+		self.nome = 'Previsão de propagandas'
+		self.dados = []
+		self.dado = ""
+		self.trigger = "div"
+		self.outer_flag = False
+		self.data_flag = False
+
+	def shandletag(self, tagin, attrs):
+		if not self.outer_flag:
+			if tagin == self.trigger and ('class', 'ellip ads-creative') in attrs:
+				self.outer_flag = True
+				self.data_flag = True
+		elif tagin == "div" and ('class','ellip') in attrs:
+			self.data_flag = True
+		elif not self.data_flag:
+			self.outer_flag = False
+			self.dados.append(self.dado)
+			self.dado = ""
+	def ehandletag(self, tagin):
+		if tagin == "div" and self.data_flag:
+			self.data_flag = False
+	def shandledata(self, data):
+		if self.data_flag:
+			self.dado += data + ""
+			
+
+class AdTitle():
+	def __init__(self):
+		self.nome = 'Titulos de propagandas'
+		self.dados = []
+		self.lista = ['div',
+						'h3',
+						'a',
+						'a']
+		self.estado = 0
+		self.data_flag = False
+	def shandletag(self, tagin, attrs):
+		if self.estado == 0 and tagin == self.lista[0]:
+			if ('class','ad_cclk') in attrs:
+				self.estado += 1
+		elif tagin == self.lista[self.estado]:
+			self.estado += 1
+			if(self.estado == len(self.lista)):
+				self.data_flag = True
+				self.estado = 0
+		else:
+			self.estado = 0
+	def ehandletag(self, tagin):
+		pass
+
+	def shandledata(self, data):
+		if self.data_flag:
+			self.dados.append(data)
+			self.data_flag = False
+
+
+class AdLink():
+	def __init__(self):
+		self.nome = 'Link de propagandas'
+		self.dados = []
+		self.lista = ['div',
+						'h3',
+						'a',
+						'a']
+		self.estado = 0
+	def shandletag(self, tagin, attrs):
+		if self.estado == 0 and tagin == self.lista[0]:
+			if ('class','ad_cclk') in attrs:
+				self.estado += 1
+		elif tagin == self.lista[self.estado]:
+			self.estado += 1
+			if(self.estado == len(self.lista)):
+				self.dados.append(attrs[1][1])
+				self.estado = 0
+		else:
+			self.estado = 0
+	def ehandletag(self, tagin):
+		pass
+
+	def shandledata(self, data):
+		pass
+
 
 class SubResultTitle():
 	def __init__(self):
@@ -75,6 +164,28 @@ class SubResultLink():
 
 	def shandledata(self, data):
 		pass
+
+
+class ResultPreview():
+	def __init__(self):
+		self.nome = 'Previsão de Resultado'
+		self.h3flag = False
+		self.data_flag = False
+		self.dados = []
+		self.dado = ""
+
+	def shandletag(self, tagin, attrs):
+		if tagin == 'span' and ('class', 'st') in attrs:
+			self.data_flag = True
+	def ehandletag(self, tagin):
+		if tagin == 'span' and self.data_flag:
+			self.dados.append(self.dado.strip())
+			self.dado = ''
+			self.data_flag = False
+
+	def shandledata(self, data):
+		if self.data_flag:
+			self.dado += data
 
 class ResultTitle() :
 	def __init__(self):
@@ -221,8 +332,12 @@ requirement.append(TopStoriesTitle())
 requirement.append(TopStoriesLink())
 requirement.append(ResultLink())
 requirement.append(ResultTitle())
+requirement.append(ResultPreview())
 requirement.append(SubResultTitle())
 requirement.append(SubResultLink())
+requirement.append(AdLink())
+requirement.append(AdTitle())
+requirement.append(AdPreview())
 
 parser = MyParser()
 
@@ -234,12 +349,16 @@ with open("../teste.html") as f:
 #     print(registro)
 for req in requirement:
 	dictoutput[req.nome] = req.dados
-json_string = json.dumps(dictoutput)
+	print(req.nome)
+	for dado in req.dados:
+		print('\t' + dado)
+	
+# json_string = json.dumps(dictoutput)
 filename = "../teste.json"
 ftry = open(filename,"w+")
 
-# If the file name exists, write a JSON string into the file.
-if filename:
-    # Writing JSON data
-    with ftry as f:
-        json.dump(json_string, f)
+# # If the file name exists, write a JSON string into the file.
+# if filename:
+#     # Writing JSON data
+#     with ftry as f:
+#         json.dump(dictoutput, f)
