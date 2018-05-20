@@ -1,9 +1,11 @@
 const puppeteerSearch = require('../utils/puppeteer_search')
+const PythonShell = require('python-shell');
+const date = new Date();
 
 /**
  * Get the results only of the Puppeteer.
  */
-exports.getPuppeteerResults = async function(persistence) {
+exports.getPuppeteerResults = async(persistence) => {
     const queries = await persistence.read('actors/actors.json');
     const browser = await puppeteerSearch.newBrowser();
     const page = await browser.newPage();
@@ -19,8 +21,73 @@ exports.getPuppeteerResults = async function(persistence) {
         console.log(query);
         let data = await puppeteerSearch.googleSearch(page, query);
 
-        await persistence.write('pup_' + query, data);
+        let fileDest = await persistence.write('pup_' + query, ".html", data);
+        
+        data = await htmlParse(fileDest);
+        await persistence.write('pup_' + query, ".json", JSON.stringify(data));
+        
+        upToS3(fileDest);
     }
 
     browser.close();
+}
+
+const htmlParse = async(file) => {
+    let pyshell = new PythonShell('./utils/html_parse.py');
+
+    pyshell.send(file);
+
+    let res = "";
+    pyshell.on('message', function (message) {
+        res += message;
+    });
+
+    let data;
+
+    return new Promise(resolve => {
+        pyshell.end(async (err,code,signal) => {
+            if (err) throw err;
+            data = await readS3(file + ".json");
+            if(data == "")
+                data = [];
+            else
+                data = JSON.parse(data);
+            data.push({"time": date.toLocaleTimeString(), "data" : JSON.parse(res)});
+            resolve(data);
+        });
+    });
+}
+
+const readS3 = async(file) => {
+    let pyshell = new PythonShell('./persistence/s3_read_file.py');
+
+    pyshell.send(file);
+
+    let res = "";
+    pyshell.on('message', function (message) {
+        res += message;
+    });
+    
+    return new Promise(resolve => {
+        pyshell.end(function (err,code,signal) {    
+            if(err) throw err;
+            resolve(res);
+        });
+    });
+}
+
+const upToS3 = async(file) => {
+    let pyshell = new PythonShell('./persistence/s3_upFile.py');
+
+    pyshell.send(file + ".json");
+
+    pyshell.on('message', function (message) {
+        console.log(message);
+    });
+    
+    pyshell.end(function (err,code,signal) {
+        if(err){
+            console.log("Erro no upload do arquivo: " + file + ".json");
+        }
+    });
 }

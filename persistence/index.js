@@ -24,7 +24,7 @@ let persistence = function() {
      *  - fileName: Name of the file to be written.
      *  - data: Data to be written.
      */
-    module.write = async(name, data) => {
+    module.write = async(name, extension, data) => {
         name = name.replace(/ /g, '_');
 
         createFolder(directory);
@@ -33,43 +33,10 @@ let persistence = function() {
 
         const fileDest = directory + currentDate + '/' + name + '/' + name;
 
-        writer = fs.createWriteStream(fileDest + ".html", { flags: 'w+'});
+        writer = fs.createWriteStream(fileDest + extension, { flags: 'w+'});
         writer.write(data);
 
-        let PythonShell = require('python-shell');
-        let pyshell = new PythonShell('./utils/html_parse.py');
-        
-        pyshell.send(fileDest);
-
-        let res = "";
-        await pyshell.on('message', function (message) {
-            // console.log(message);
-            res += message;
-        });
-
-        pyshell.end(async (err,code,signal) => {
-            if (err) throw err;
-            
-            data = await module.read(fileDest + ".json");
-            if(data == null)
-                data = [];
-            data.push({"time": date.toLocaleTimeString(), "data" : JSON.parse(res)});
-            
-            writer = fs.createWriteStream(fileDest + ".json", { flags: 'w+'});
-            writer.write(JSON.stringify(data));
-        });
-
-        pyshell = new PythonShell('./persistence/s3_upFile.py');
-
-        pyshell.send(fileDest + ".json");
-
-        pyshell.on('message', function (message) {
-            console.log(message);
-        });
-        
-        pyshell.end(function (err,code,signal) {
-            console.log("Erro no upload do arquivo: " + fileDest + ".json");
-        });
+        return fileDest;
     }
 
     /**
