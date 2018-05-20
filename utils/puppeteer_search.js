@@ -45,20 +45,8 @@ exports.googleSearch = async (page, query) => {
 		
 	// Retorna txt e html com os links
 	// Results é um string com todos os links concatenados
-	var results = "";
-	var string = await page.content();
-	let retHtml = string;
-	while (string.indexOf("<h3 class=\"r\"><a href=\"") != -1) {
-		// first_index delimita a primeira porção e last_index a última
-		// O resultado desejado se encontra entre esses índices
-		var first_index = string.indexOf("<h3 class=\"r\"><a href=\"");
-		var string = string.substring(first_index + 23, string.length);
-		var last_index = string.indexOf("\"");
-		var final_string = string.substring(0, last_index);
-		results += final_string + '\n';
-	}
+	return await page.content();
 
-	return {'txt' : results, 'html' : retHtml};
 };
 
 /**

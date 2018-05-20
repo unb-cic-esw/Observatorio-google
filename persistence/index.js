@@ -17,7 +17,6 @@ let persistence = function() {
     // Writer of the file.
     let writer = null
 
-
     /**
      * Write data in file.
      * 
@@ -25,40 +24,52 @@ let persistence = function() {
      *  - fileName: Name of the file to be written.
      *  - data: Data to be written.
      */
-    module.write = function(name, extension, data) {
+    module.write = async(name, data) => {
         name = name.replace(/ /g, '_');
-        const fileName = name + extension;
 
         createFolder(directory);
         createFolder(directory + currentDate);
         createFolder(directory + currentDate + '/' + name);
 
-        const fileDest = directory + currentDate + '/' + name + '/' + fileName;
+        const fileDest = directory + currentDate + '/' + name + '/' + name;
 
-        writer = fs.createWriteStream(fileDest, { flags: 'a+'});
-        
-        if(extension == '.json'){
-            data = JSON.parse(data);
-            data = {'time' : date.toLocaleTimeString(), 'data' : data};
-            data = JSON.stringify(data);
-        }
-        
+        writer = fs.createWriteStream(fileDest + ".html", { flags: 'w+'});
         writer.write(data);
 
-        if(extension == '.json'){
-            var PythonShell = require('python-shell');
-            var pyshell = new PythonShell('./persistence/s3_upFile.py');
+        let PythonShell = require('python-shell');
+        let pyshell = new PythonShell('./utils/html_parse.py');
+        
+        pyshell.send(fileDest);
 
-            pyshell.send(fileDest);
+        let res = "";
+        await pyshell.on('message', function (message) {
+            // console.log(message);
+            res += message;
+        });
 
-            pyshell.on('message', function (message) {
-              console.log(message);
-            });
+        pyshell.end(async (err,code,signal) => {
+            if (err) throw err;
             
-            pyshell.end(function (err,code,signal) {
-              if (err) throw err;
-            });
-        }
+            data = await module.read(fileDest + ".json");
+            if(data == null)
+                data = [];
+            data.push({"time": date.toLocaleTimeString(), "data" : JSON.parse(res)});
+            
+            writer = fs.createWriteStream(fileDest + ".json", { flags: 'w+'});
+            writer.write(JSON.stringify(data));
+        });
+
+        pyshell = new PythonShell('./persistence/s3_upFile.py');
+
+        pyshell.send(fileDest + ".json");
+
+        pyshell.on('message', function (message) {
+            console.log(message);
+        });
+        
+        pyshell.end(function (err,code,signal) {
+            console.log("Erro no upload do arquivo: " + fileDest + ".json");
+        });
     }
 
     /**

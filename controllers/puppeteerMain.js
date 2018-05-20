@@ -18,13 +18,8 @@ exports.getPuppeteerResults = async function(persistence) {
         // Pesquisa resultando nos links em '.txt e '.html'
         console.log(query);
         let data = await puppeteerSearch.googleSearch(page, query);
-        
-        let jsonData = {'links' : []};
-        for (let link of data['txt'].split('\n'))
-            jsonData['links'].push(link);
 
-        persistence.write('pup_' + query, '.json', JSON.stringify(jsonData));
-        persistence.write('pup_' + query, '.html', data['html']);
+        await persistence.write('pup_' + query, data);
     }
 
     browser.close();
