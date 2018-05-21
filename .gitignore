@@ -5,12 +5,14 @@ resultados/
 *.txt
 *.json
 resultados/2018-5-10/
-
+utils/htmltesting.py
 # Test Folders
 testFolder
 123
 @#$
 testFolder123
-
+teste.html
+outro_html.html
 # Mac Files
 .DS_Store
+.gitignore
