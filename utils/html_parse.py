@@ -341,24 +341,26 @@ requirement.append(AdPreview())
 
 parser = MyParser()
 
-with open("../teste.html") as f:
+inputFile = input()
+
+with open(inputFile + ".html") as f:
     parser.feed(f.read())
 
 
 # for registro in lista:
 #     print(registro)
+json_string = "{"
 for req in requirement:
-	dictoutput[req.nome] = req.dados
-	print(req.nome)
+	if(json_string[-1] != '{'):
+		json_string += ","
+	req.nome = req.nome.replace("\"", "\\\"")
+	json_string += "\"" + req.nome + "\"" + ": ["
 	for dado in req.dados:
-		print('\t' + dado)
-	
-# json_string = json.dumps(dictoutput)
-filename = "../teste.json"
-ftry = open(filename,"w+")
+		if(json_string[-1] != '['):
+			json_string += ","
+		dado = dado.replace("\"", "\\\"")
+		json_string += "\"" + dado + "\""
+	json_string += "]"		
+json_string += "}"
 
-# # If the file name exists, write a JSON string into the file.
-# if filename:
-#     # Writing JSON data
-#     with ftry as f:
-#         json.dump(dictoutput, f)
+print(json_string)

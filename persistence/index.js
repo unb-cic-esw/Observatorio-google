@@ -17,7 +17,6 @@ let persistence = function() {
     // Writer of the file.
     let writer = null
 
-
     /**
      * Write data in file.
      * 
@@ -25,40 +24,19 @@ let persistence = function() {
      *  - fileName: Name of the file to be written.
      *  - data: Data to be written.
      */
-    module.write = function(name, extension, data) {
+    module.write = async(name, extension, data) => {
         name = name.replace(/ /g, '_');
-        const fileName = name + extension;
 
         createFolder(directory);
         createFolder(directory + currentDate);
         createFolder(directory + currentDate + '/' + name);
 
-        const fileDest = directory + currentDate + '/' + name + '/' + fileName;
+        const fileDest = directory + currentDate + '/' + name + '/' + name;
 
-        writer = fs.createWriteStream(fileDest, { flags: 'a+'});
-        
-        if(extension == '.json'){
-            data = JSON.parse(data);
-            data = {'time' : date.toLocaleTimeString(), 'data' : data};
-            data = JSON.stringify(data);
-        }
-        
+        writer = fs.createWriteStream(fileDest + extension, { flags: 'w+'});
         writer.write(data);
 
-        if(extension == '.json'){
-            var PythonShell = require('python-shell');
-            var pyshell = new PythonShell('./persistence/s3_upFile.py');
-
-            pyshell.send(fileDest);
-
-            pyshell.on('message', function (message) {
-              console.log(message);
-            });
-            
-            pyshell.end(function (err,code,signal) {
-              if (err) throw err;
-            });
-        }
+        return fileDest;
     }
 
     /**

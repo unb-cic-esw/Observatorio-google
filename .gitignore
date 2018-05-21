@@ -15,4 +15,8 @@ teste.html
 outro_html.html
 # Mac Files
 .DS_Store
+<<<<<<< HEAD
 .gitignore
+=======
+.env
+>>>>>>> d3a823f8879a1263c2fedd579adde04624b043e1
