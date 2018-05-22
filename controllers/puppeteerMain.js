@@ -1,4 +1,4 @@
-const puppeteerSearch = require('../utils/puppeteer_search')
+const puppeteerSearch = require('../utils/puppeteer_search');
 const PythonShell = require('python-shell');
 const date = new Date();
 
@@ -6,6 +6,17 @@ const date = new Date();
  * Get the results only of the Puppeteer.
  */
 exports.getPuppeteerResults = async(persistence) => {
+    let allDates = await readS3("dates.json");
+
+    if(allDates == "")
+        allDates = {"dates" : []};
+    else
+        allDates = JSON.parse(allDates);
+
+    allDates["dates"].push(date.toLocaleDateString().replace(/\//g, '-'));
+    await persistence.rawWrite("allDates.json", JSON.stringify(allDates));
+
+    upToS3("allDates.json");
     const queries = await persistence.read('actors/actors.json');
     const browser = await puppeteerSearch.newBrowser();
     const page = await browser.newPage();
@@ -26,7 +37,7 @@ exports.getPuppeteerResults = async(persistence) => {
         data = await htmlParse(fileDest);
         await persistence.write('pup_' + query, ".json", JSON.stringify(data));
         
-        upToS3(fileDest);
+        upToS3(fileDest + ".json");
     }
 
     browser.close();
@@ -79,7 +90,7 @@ const readS3 = async(file) => {
 const upToS3 = async(file) => {
     let pyshell = new PythonShell('./persistence/s3_upFile.py');
 
-    pyshell.send(file + ".json");
+    pyshell.send(file);
 
     pyshell.on('message', function (message) {
         console.log(message);
@@ -87,7 +98,7 @@ const upToS3 = async(file) => {
     
     pyshell.end(function (err,code,signal) {
         if(err){
-            console.log("Erro no upload do arquivo: " + file + ".json");
+            console.log("Erro no upload do arquivo: " + file);
         }
     });
 }
