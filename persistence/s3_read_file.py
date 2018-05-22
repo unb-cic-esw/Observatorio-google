@@ -1,8 +1,9 @@
 import boto3
 import json
+import os
 
 s3 = boto3.resource('s3')
-bucket = s3.Bucket('timegoogle')
+bucket = s3.Bucket(os.environ['S3_BUCKET'])
 
 fileName = input()
 
