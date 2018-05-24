@@ -6,7 +6,7 @@ const date = new Date();
  * Get the results only of the Puppeteer.
  */
 exports.getPuppeteerResults = async(persistence) => {
-    let allDates = await readS3("allDates.json");
+    let allDates = await readS3("all_dates.json");
 
     if(allDates == "")
         allDates = {"datas" : []};
