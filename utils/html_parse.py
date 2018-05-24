@@ -69,7 +69,7 @@ class AdTitle():
 
 class AdLink():
 	def __init__(self):
-		self.nome = 'Link de propagandas'
+		self.nome = 'Links de propagandas'
 		self.dados = []
 		self.lista = ['div',
 						'h3',
@@ -96,7 +96,7 @@ class AdLink():
 
 class SubResultTitle():
 	def __init__(self):
-		self.nome = 'Titulo SubResultado'
+		self.nome = 'Titulos de Subresultados'
 		self.data_flag = False
 		self.dados = []
 		self.lista = ["table",
@@ -133,7 +133,7 @@ class SubResultTitle():
 
 class SubResultLink():
 	def __init__(self):
-		self.nome = 'Titulo SubResultado'
+		self.nome = 'Titulos de Subresultados'
 		self.dados = []
 		self.lista = [
 						'table',
@@ -168,7 +168,7 @@ class SubResultLink():
 
 class ResultPreview():
 	def __init__(self):
-		self.nome = 'Previsão de Resultado'
+		self.nome = 'Previsões de Resultados'
 		self.h3flag = False
 		self.data_flag = False
 		self.dados = []
@@ -189,7 +189,7 @@ class ResultPreview():
 
 class ResultTitle() :
 	def __init__(self):
-		self.nome = 'Titulo Resultado'
+		self.nome = 'Titulos de Resultados'
 		self.h3flag = False
 		self.dflag = False
 		self.dados = []
@@ -224,7 +224,7 @@ class ResultTitle() :
 
 class ResultLink() :
 	def __init__(self):
-		self.nome = 'link Resultado'
+		self.nome = 'Links de Resultados'
 		self.h3flag = False
 		self.dados = []
 
@@ -258,7 +258,7 @@ class TopStoriesLink() :
 	def __init__(self):
 		self.tags = set()
 		self.tags.add('g-inner-card')
-		self.nome = 'link Top Stories'
+		self.nome = 'Links das Principais Noticias (Com foto)'
 		self.gflag = False
 		self.dados = []
 
@@ -280,7 +280,7 @@ class TopStoriesTitle() :
 	def __init__(self):
 		self.tags = set()
 		self.tags.add('div')
-		self.nome = 'Titulo Top Stories'
+		self.nome = 'Titulos das Principais Noticias (Com foto)'
 		self.flag = False
 		self.atributos = set()
 		self.atributos.add(('style','-webkit-line-clamp:4;height:5.5em'))
@@ -341,26 +341,22 @@ requirement.append(AdPreview())
 
 parser = MyParser()
 
-inputFile = input()
+filename = input()
 
-with open(inputFile + ".html") as f:
+with open(filename + ".html") as f:
     parser.feed(f.read())
 
-
-# for registro in lista:
-#     print(registro)
-json_string = "{"
 for req in requirement:
-	if(json_string[-1] != '{'):
-		json_string += ","
-	req.nome = req.nome.replace("\"", "\\\"")
-	json_string += "\"" + req.nome + "\"" + ": ["
+	dictoutput[req.nome] = req.dados
+	print(req.nome)
 	for dado in req.dados:
-		if(json_string[-1] != '['):
-			json_string += ","
-		dado = dado.replace("\"", "\\\"")
-		json_string += "\"" + dado + "\""
-	json_string += "]"		
-json_string += "}"
+		print('\t' + dado)
+	
+filename += ".json"
+ftry = open(filename,"w+")
 
-print(json_string)
+# If the file name exists, write a JSON string into the file.
+if filename:
+    # Writing JSON data
+    with ftry as f:
+        json.dump(dictoutput, f)

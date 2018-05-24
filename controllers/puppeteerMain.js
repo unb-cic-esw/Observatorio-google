@@ -6,15 +6,17 @@ const date = new Date();
  * Get the results only of the Puppeteer.
  */
 exports.getPuppeteerResults = async(persistence) => {
-    let allDates = await readS3("dates.json");
+    let allDates = await readS3("allDates.json");
 
     if(allDates == "")
-        allDates = {"dates" : []};
+        allDates = {"datas" : []};
     else
         allDates = JSON.parse(allDates);
 
-    allDates["dates"].push(date.toLocaleDateString().replace(/\//g, '-'));
-    await persistence.rawWrite("allDates.json", JSON.stringify(allDates));
+	if(allDates["datas"].indexOf(date.toLocaleDateString().replace(/\//g, '-')) <= -1){
+		allDates["datas"].push(date.toLocaleDateString().replace(/\//g, '-'));
+		await persistence.rawWrite("allDates.json", JSON.stringify(allDates));
+	}
 
     upToS3("allDates.json");
     const queries = await persistence.read('actors/actors.json');
@@ -25,9 +27,9 @@ exports.getPuppeteerResults = async(persistence) => {
         await puppeteerSearch.loginGoogle(page, process.argv[3], process.argv[4]);
     }
     catch(e) {
-        console.log("Login ou senha invalidos");
+        console.log("Usuario ou senha invalidos");
     }
-    for (let query of queries['actors']) {
+    for (let query of queries['atores']) {
         // Pesquisa resultando nos links em '.txt e '.html'
         console.log(query);
         let data = await puppeteerSearch.googleSearch(page, query);
@@ -63,7 +65,7 @@ const htmlParse = async(file) => {
                 data = [];
             else
                 data = JSON.parse(data);
-            data.push({"time": date.toLocaleTimeString(), "data" : JSON.parse(res)});
+            data.push({"horario": date.toLocaleTimeString(), "dados" : JSON.parse(res)});
             resolve(data);
         });
     });
