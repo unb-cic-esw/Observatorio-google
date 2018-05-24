@@ -24,6 +24,20 @@ let persistence = function() {
      *  - fileName: Name of the file to be written.
      *  - data: Data to be written.
      */
+    module.rawWrite = async(name, data) => {
+        name = name.replace(/ /g, '_');
+
+        writer = fs.createWriteStream(name, { flags: 'w+'});
+        writer.write(data);
+    }
+
+    /**
+     * Write data in file.
+     * 
+     * Arguments:
+     *  - fileName: Name of the file to be written.
+     *  - data: Data to be written.
+     */
     module.write = async(name, extension, data) => {
         name = name.replace(/ /g, '_');
 

@@ -1,4 +1,4 @@
-const puppeteerSearch = require('../utils/puppeteer_search')
+const puppeteerSearch = require('../utils/puppeteer_search');
 const PythonShell = require('python-shell');
 const date = new Date();
 
@@ -6,6 +6,19 @@ const date = new Date();
  * Get the results only of the Puppeteer.
  */
 exports.getPuppeteerResults = async(persistence) => {
+    let allDates = await readS3("allDates.json");
+
+    if(allDates == "")
+        allDates = {"datas" : []};
+    else
+        allDates = JSON.parse(allDates);
+
+	if(allDates["datas"].indexOf(date.toLocaleDateString().replace(/\//g, '-')) <= -1){
+		allDates["datas"].push(date.toLocaleDateString().replace(/\//g, '-'));
+		await persistence.rawWrite("allDates.json", JSON.stringify(allDates));
+	}
+
+    upToS3("allDates.json");
     const queries = await persistence.read('actors/actors.json');
     const browser = await puppeteerSearch.newBrowser();
     const page = await browser.newPage();
@@ -14,9 +27,9 @@ exports.getPuppeteerResults = async(persistence) => {
         await puppeteerSearch.loginGoogle(page, process.argv[3], process.argv[4]);
     }
     catch(e) {
-        console.log("Login ou senha invalidos");
+        console.log("Usuario ou senha invalidos");
     }
-    for (let query of queries['actors']) {
+    for (let query of queries['atores']) {
         // Pesquisa resultando nos links em '.txt e '.html'
         console.log(query);
         let data = await puppeteerSearch.googleSearch(page, query);
@@ -26,7 +39,7 @@ exports.getPuppeteerResults = async(persistence) => {
         data = await htmlParse(fileDest);
         await persistence.write('pup_' + query, ".json", JSON.stringify(data));
         
-        upToS3(fileDest);
+        upToS3(fileDest + ".json");
     }
 
     browser.close();
@@ -52,7 +65,7 @@ const htmlParse = async(file) => {
                 data = [];
             else
                 data = JSON.parse(data);
-            data.push({"time": date.toLocaleTimeString(), "data" : JSON.parse(res)});
+            data.push({"horario": date.toLocaleTimeString(), "dados" : JSON.parse(res)});
             resolve(data);
         });
     });
@@ -79,7 +92,7 @@ const readS3 = async(file) => {
 const upToS3 = async(file) => {
     let pyshell = new PythonShell('./persistence/s3_upFile.py');
 
-    pyshell.send(file + ".json");
+    pyshell.send(file);
 
     pyshell.on('message', function (message) {
         console.log(message);
@@ -87,7 +100,7 @@ const upToS3 = async(file) => {
     
     pyshell.end(function (err,code,signal) {
         if(err){
-            console.log("Erro no upload do arquivo: " + file + ".json");
+            console.log("Erro no upload do arquivo: " + file);
         }
     });
 }

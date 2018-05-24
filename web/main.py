@@ -4,7 +4,7 @@ import json
 import os
 
 s3 = boto3.resource('s3')
-bucket = s3.Bucket('timegoogle')
+bucket = s3.Bucket(os.environ['S3_BUCKET'])
 
 app = Flask(__name__)
 
@@ -25,6 +25,16 @@ def list_links(date, actor):
 		if(obj.key == fileName):
 			data = obj.get()['Body'].read().decode('utf8')
 	return jsonify(json.loads(data))
+
+@app.route('/dates', methods = ['GET'])
+def list_dates():
+	fileName = 'allDates.json'
+	data = ""
+	for obj in bucket.objects.all():
+		if(obj.key == fileName):
+			data = obj.get()['Body'].read().decode('utf8')
+	return jsonify(json.loads(data))
+
 
 port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port=port, debug=True)
