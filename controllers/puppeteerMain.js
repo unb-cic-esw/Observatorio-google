@@ -6,7 +6,7 @@ const date = new Date();
  * Get the results only of the Puppeteer.
  */
 exports.getPuppeteerResults = async(persistence) => {
-    let allDates = await readS3("allDates.json");
+    let allDates = await readS3("all_dates.json");
 
     if(allDates == "")
         allDates = {"datas" : []};
@@ -14,11 +14,12 @@ exports.getPuppeteerResults = async(persistence) => {
         allDates = JSON.parse(allDates);
 
 	if(allDates["datas"].indexOf(date.toLocaleDateString().replace(/\//g, '-')) <= -1){
-		allDates["datas"].push(date.toLocaleDateString().replace(/\//g, '-'));
-		await persistence.rawWrite("allDates.json", JSON.stringify(allDates));
+        allDates["datas"].push(date.toLocaleDateString().replace(/\//g, '-'));
+		await persistence.rawWrite("all_dates.json", JSON.stringify(allDates));
 	}
 
-    upToS3("allDates.json");
+    upToS3("all_dates.json");
+
     const queries = await persistence.read('actors/actors.json');
     const browser = await puppeteerSearch.newBrowser();
     const page = await browser.newPage();

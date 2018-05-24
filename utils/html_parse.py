@@ -356,17 +356,27 @@ filename = input()
 with open(filename + ".html") as f:
     parser.feed(f.read())
 
+json_string = "{"
 for req in requirement:
-	dictoutput[req.nome] = req.dados
-	print(req.nome)
+	if(json_string[-1] != '{'):
+		json_string += ","
+	req.nome = req.nome.replace("\"", "\\\"")
+	json_string += "\"" + req.nome + "\"" + ": ["
 	for dado in req.dados:
-		print('\t' + dado)
-	
-filename += ".json"
-ftry = open(filename,"w+")
+		if(json_string[-1] != '['):
+			json_string += ","
+		dado = dado.replace("\"", "\\\"")
+		json_string += "\"" + dado + "\""
+	json_string += "]"		
+json_string += "}"
 
-# If the file name exists, write a JSON string into the file.
-if filename:
-    # Writing JSON data
-    with ftry as f:
-        json.dump(dictoutput, f)
+print(json_string)
+
+# filename += ".json"
+# ftry = open(filename,"w+")
+
+# # If the file name exists, write a JSON string into the file.
+# if filename:
+#     # Writing JSON data
+#     with ftry as f:
+#         json.dump(dictoutput, f)
