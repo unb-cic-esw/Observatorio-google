@@ -28,13 +28,13 @@ def list_links(date, actor):
 
 @app.route('/dates', methods = ['GET'])
 def list_dates():
-	fileName = 'allDates.json'
+	fileName = 'all_dates.json'
 	data = ""
 	for obj in bucket.objects.all():
 		if(obj.key == fileName):
 			data = obj.get()['Body'].read().decode('utf8')
 	return jsonify(json.loads(data))
 
-
-port = int(os.environ.get('PORT', 5000))
-app.run(host='0.0.0.0', port=port, debug=True)
+if __name__ == "__main__":
+	port = int(os.environ.get('PORT', 5000))
+	app.run(host='0.0.0.0', port=port, debug=True)
