@@ -194,7 +194,6 @@ class ResultPreview():
 
 	def shandledata(self, data):
 		if self.data_flag:
-			print("to aqui")
 			self.dado += data
 
 class ResultTitle() :
