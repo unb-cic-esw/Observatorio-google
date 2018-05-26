@@ -16,5 +16,5 @@ outro_html.html
 # Mac Files
 .DS_Store
 .env
-
+*.pyc
 *.vscode/
