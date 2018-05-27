@@ -2,6 +2,9 @@ const puppeteerSearch = require('../utils/puppeteer_search');
 const PythonShell = require('python-shell');
 const date = new Date();
 
+const pesquisasController = require('../server/controllers/pesquisas');
+
+
 /**
  * Get the results only of the Puppeteer.
  */
@@ -24,9 +27,10 @@ exports.getPuppeteerResults = async(persistence) => {
     const queries = await persistence.read('actors/actors.json');
     const browser = await puppeteerSearch.newBrowser();
     const page = await browser.newPage();
-
+    const usuario = process.argv[3];
+    const senha = process.argv[4];
     try{
-        await puppeteerSearch.loginGoogle(page, process.argv[3], process.argv[4]);
+        await puppeteerSearch.loginGoogle(page, usuario, senha);
     }
     catch(e) {
         console.log("Usuario ou senha invalidos");
@@ -37,11 +41,13 @@ exports.getPuppeteerResults = async(persistence) => {
         let data = await puppeteerSearch.googleSearch(page, query);
         let fileDest = await persistence.write('pup_' + query, ".html", data);
         data = await htmlParse(fileDest);
-        await persistence.write('pup_' + query, ".json", JSON.stringify(data));
-        //console.log (data[0]);
-        // escreve data no banco
-
-        //process.exit(); // tirar depois
+        data.data = date.toLocaleString();
+        data.ator = query;
+        data.perfil = usuario;
+        //await persistence.write('pup_' + query, ".json", JSON.stringify(data));
+        // escreve dados no banco
+        await pesquisasController.create(data);
+        process.exit(); // tirar depois
     }
     console.log(data);
     browser.close();
@@ -60,13 +66,15 @@ const htmlParse = async(file) => {
     return new Promise(resolve => {
         pyshell.end(async (err,code,signal) => {
             if (err) throw err;
-            data = [];
             // data = await readS3(file + ".json");
             // if(data == "")
             //     data = [];
             // else
             //     data = JSON.parse(data);
-            data.push({"horario": date.toLocaleTimeString(), "dados" : JSON.parse(res)});
+            //data.push({"horario": date.toLocaleTimeString(), "dados" : JSON.parse(res)});
+            
+            data = JSON.parse(res);
+
             resolve(data);
         });
     });

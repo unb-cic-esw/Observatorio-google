@@ -11,7 +11,7 @@ dictoutput = {}
 
 class AdPreview():
 	def __init__(self):
-		self.nome = 'Previsão de propagandas'
+		self.nome = 'previsaoPropagandas'
 		self.dados = []
 		self.dado = ""
 		self.trigger = "div"
@@ -39,7 +39,7 @@ class AdPreview():
 
 class AdTitle():
 	def __init__(self):
-		self.nome = 'Titulos de propagandas'
+		self.nome = 'tituloPropagandas'
 		self.dados = []
 		self.lista = ['div',
 						'h3',
@@ -69,7 +69,7 @@ class AdTitle():
 
 class AdLink():
 	def __init__(self):
-		self.nome = 'Links de propagandas'
+		self.nome = 'linkPropagandas'
 		self.dados = []
 		self.lista = ['div',
 						'h3',
@@ -96,7 +96,7 @@ class AdLink():
 
 class SubResultTitle():
 	def __init__(self):
-		self.nome = 'Titulos de Subresultados'
+		self.nome = 'tituloSubresultados'
 		self.data_flag = False
 		self.dados = []
 		self.lista = ["table",
@@ -133,7 +133,7 @@ class SubResultTitle():
 
 class SubResultLink():
 	def __init__(self):
-		self.nome = 'Titulos de Subresultados'
+		self.nome = 'linkSubresultados'
 		self.dados = []
 		self.lista = [
 						'table',
@@ -168,7 +168,7 @@ class SubResultLink():
 
 class ResultPreview():
 	def __init__(self):
-		self.nome = 'Previsões de Resultados'
+		self.nome = 'previsaoResultados'
 		self.h3flag = False
 		self.data_flag = False
 		self.dados = []
@@ -198,7 +198,7 @@ class ResultPreview():
 
 class ResultTitle() :
 	def __init__(self):
-		self.nome = 'Titulos de Resultados'
+		self.nome = 'tituloResultados'
 		self.h3flag = False
 		self.dflag = False
 		self.dados = []
@@ -233,7 +233,7 @@ class ResultTitle() :
 
 class ResultLink() :
 	def __init__(self):
-		self.nome = 'Links de Resultados'
+		self.nome = 'linkResultados'
 		self.h3flag = False
 		self.dados = []
 
@@ -267,7 +267,7 @@ class TopStoriesLink() :
 	def __init__(self):
 		self.tags = set()
 		self.tags.add('g-inner-card')
-		self.nome = 'Links das Principais Noticias (Com foto)'
+		self.nome = 'linkNoticias'
 		self.gflag = False
 		self.dados = []
 
@@ -289,7 +289,7 @@ class TopStoriesTitle() :
 	def __init__(self):
 		self.tags = set()
 		self.tags.add('div')
-		self.nome = 'Titulos das Principais Noticias (Com foto)'
+		self.nome = 'tituloNoticias'
 		self.flag = False
 		self.atributos = set()
 		self.atributos.add(('style','-webkit-line-clamp:4;height:5.5em'))
