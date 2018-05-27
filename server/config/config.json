@@ -16,8 +16,5 @@
     "dialect": "postgres"
   },
   "production": {
-    "use_env_variable": "DATABASE_URL",
-    "host": "observatorio-google.herokuapp.com",
-    "dialect": "postgres"
-  }
+    "use_env_variable": "DATABASE_URL"
 }
