@@ -3,7 +3,6 @@ package-lock.json
 .idea
 resultados/
 *.txt
-*.json
 resultados/2018-5-10/
 utils/htmltesting.py
 # Test Folders
@@ -18,3 +17,4 @@ outro_html.html
 .env
 *.pyc
 *.vscode/
+all_dates.json
