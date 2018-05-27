@@ -1,30 +1,16 @@
-require('dotenv').config();
+const express = require('express');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
 
-const persistence = require('./persistence/index.js');
-const googlePuppeteerAWS = require('./controllers/puppeteerMain.js');
-const googlePuppeteerDb = require('./controllers/puppeteerDb.js');
-const googleApi = require('./controllers/apiMain.js');
-const googleScrapper = require('./controllers/scraperMain.js');
+const app = express();
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-/**
- * Execute the requests.
- *
- *	deve ser passado o tipo de pesquisa:
- *	'scrapper', 'api', ou 'puppeteer'
- */
-const tipoPesquisa = process.argv[2];
+// Require our routes into the application.
+require('./server/routes')(app);
+app.get('*', (req, res) => res.status(200).send({
+  message: 'Bem vindo ao Observatório.',
+}));
 
-if (tipoPesquisa == 'scraper') {
-	googleScrapper.getScraperResults(persistence());
-}
-else if (tipoPesquisa == 'api') {
-	googleApi.getAPIResults(persistence());
-}
-else if (tipoPesquisa == 'puppeteer') {
-	process.env.PERSISTENCIA == 'db' ?
-	googlePuppeteerDb.getPuppeteerResults(persistence()) :
-	googlePuppeteerAWS.getPuppeteerResults(persistence())
-}
-else {
-	console.log ('selecione um tipo de pesquisa (scraper, api ou puppeteer)');
-}
+module.exports = app;
