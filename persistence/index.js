@@ -1,5 +1,5 @@
 const fs = require('fs');
-const readline = require('readline');
+const Promise = require('es6-promise').Promise;
 const date = new Date();
 
 /**
@@ -10,15 +10,13 @@ let persistence = function() {
     let module = {};
     // Directory of result folder.
     const directory = "./resultados/";
-    // Directory of resources.
-    const resourceDirectory = "../resources/";
     // Current time as string.
     const currentDate = date.toLocaleDateString().replace(/\//g, '-');
     // Writer of the file.
     let writer = null
 
     /**
-     * Write data in file.
+     * Write data in a file in the current directory.
      * 
      * Arguments:
      *  - fileName: Name of the file to be written.
@@ -32,10 +30,11 @@ let persistence = function() {
     }
 
     /**
-     * Write data in file.
+     * Write data in file in a specific directory and returns the name of that directory.
      * 
      * Arguments:
-     *  - fileName: Name of the file to be written.
+     *  - name: Name of the file to be written.
+     *  - extension: Extension of the file to be written.
      *  - data: Data to be written.
      */
     module.write = async(name, extension, data) => {
@@ -60,7 +59,7 @@ let persistence = function() {
      *  - fileName: Name of the file to be written.
      */
     module.read = async function(fileName) {
-        const path = /*resourceDirectory + */ fileName
+        const path = fileName
 
         if (canOpenFile(path)) {
             return JSON.parse(fs.readFileSync(fileName, 'utf8'));
@@ -75,12 +74,11 @@ let persistence = function() {
      * Arguments:
      *  - folderName: Name of the folder
      */
-    const createFolder = async function(folderName) {
+    const createFolder = async(folderName) => {
         if (!checkFolderExists(folderName)) {
             return new Promise(resolve => {
-                fs.mkdirSync(folderName, 0766, function(err) {
+                fs.mkdirSync(folderName, 502, function(err) {
                     if (err) {
-                        console.error(err);
                         resolve(false);
                     }
                 });
