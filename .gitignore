@@ -11,6 +11,7 @@ testFolder
 @#$
 testFolder123
 teste.html
+*.html
 outro_html.html
 # Mac Files
 .DS_Store
