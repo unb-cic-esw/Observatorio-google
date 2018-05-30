@@ -9,13 +9,61 @@ requirement = []
 dictoutput = {}
 
 
-class TopStoryImage():
+class Requirement():
 
 	def __init__(self):
-		self.nome = 'PrincipaisNoticiasImagens'
-		self.dados = []
+		self._dados = None
+		self._nome = None
+
+	def dados(self):
+		return self._dados
+
+	def nome(self):
+		return self._nome
+
+class CompositeRequirement(Requirement):
+	def __init__(self):
+		super(CompositeRequirement, self).__init__()
+		self.lista = []
+	
+	def dados(self):
+		for i in range(0, len(self.lista[0].dados())):
+			acc = {}
+			for req in self.lista:
+				acc[req.nome()] = req.dados()[i]
+
+			self._dados.append(acc)
+		return self._dados
+
+	def shandletag(self, tagin, attrs):
+		for req in self.lista:
+			req.shandletag(tagin, attrs)
+
+	def ehandletag(self, tagin):
+		for req in self.lista:
+			req.ehandletag(tagin)
+
+	def shandledata(self, data):
+		for req in self.lista:
+			req.shandledata(data)
+
+
+class TopStory(CompositeRequirement):
+	def __init__(self):
+		self._nome = 'PrincipaisNoticias'
+		self._dados = []
+		self.lista = []
+		self.lista.append(TopStoryTitle())
+		self.lista.append(TopStoryLink())
+		self.lista.append(TopStoryImage())
+
+class TopStoryImage(Requirement):
+
+	def __init__(self):
+		self._nome = 'PrincipaisNoticiasImagens'
+		self._dados = []
 		self.contador = -1
-		self.lista = ['g-img','img']
+		self.lista = ['g-img', 'img']
 
 	def shandletag(self, tagin, attrs):
 		if self.contador == -1:
@@ -25,9 +73,9 @@ class TopStoryImage():
 			self.contador += 1
 		else:
 			self.contador = -1
-			
+
 		if self.contador == 2:
-			self.dados.append(attrs[1][1])
+			self._dados.append(attrs[1][1])
 			self.contador = -1
 
 	def ehandletag(self, tagin):
@@ -36,106 +84,188 @@ class TopStoryImage():
 	def shandledata(self, data):
 		pass
 
-class AdPreview():
+
+class TopStoryLink(Requirement):
 	def __init__(self):
-		self.nome = 'previsaoPropagandas'
-		self.dados = []
+		self.tags = set()
+		self.tags.add('g-inner-card')
+		self._nome = 'linkNoticias'
+		self.gflag = False
+		self._dados = []
+
+	def shandletag(self, tagin, attrs):
+		if self.gflag:
+			if tagin == 'a':
+				self._dados.append(attrs[0][1])
+			self.gflag = False
+		elif tagin in self.tags:
+			self.gflag = True
+
+	def ehandletag(self, tagin):
+		return
+
+	def shandledata(self, data):
+		return
+
+
+class TopStoryTitle(Requirement):
+	def __init__(self):
+		self.tags = set()
+		self.tags.add('div')
+		self._nome = 'tituloNoticias'
+		self.flag = False
+		self.atributos = set()
+		self.atributos.add(('style', '-webkit-line-clamp:4;height:5.5em'))
+		self._dados = []
+
+	def shandletag(self, tagin, attrs):
+		if tagin in self.tags:
+			aux = [tagin]
+			for attr in attrs:
+				if attr in self.atributos:
+					aux += [attr]
+			if len(aux) > 1:
+				self.flag = True
+
+	def ehandletag(self, tagin):
+		return
+
+	def shandledata(self, data):
+		if self.checkflag():
+			self._dados.append(data)
+
+	def checkflag(self):
+		if self.flag:
+			self.flag = False
+			return True
+		else:
+			return self.flag
+
+
+class Ad(CompositeRequirement):
+	def __init__(self):
+		self._nome = 'Ad'
+		self._dados = []
+		self.lista = []
+		self.lista.append(AdTitle())
+		self.lista.append(AdLink())
+		self.lista.append(AdPreview())
+
+
+
+
+
+class AdTitle(Requirement):
+	def __init__(self):
+		self._nome = 'tituloPropagandas'
+		self._dados = []
+		self.lista = ['div',
+                    'h3',
+                    'a',
+                    'a']
+		self.estado = 0
+		self.data_flag = False
+
+	def shandletag(self, tagin, attrs):
+		if self.estado == 0 and tagin == self.lista[0]:
+			if ('class', 'ad_cclk') in attrs:
+				self.estado += 1
+		elif tagin == self.lista[self.estado]:
+			self.estado += 1
+			if(self.estado == len(self.lista)):
+				self.data_flag = True
+				self.estado = 0
+		else:
+			self.estado = 0
+
+	def ehandletag(self, tagin):
+		pass
+
+	def shandledata(self, data):
+		if self.data_flag:
+			self._dados.append(data)
+			self.data_flag = False
+
+
+class AdLink(Requirement):
+	def __init__(self):
+		self._nome = 'linkPropagandas'
+		self._dados = []
+		self.lista = ['div',
+                    'h3',
+                    'a',
+                    'a']
+		self.estado = 0
+
+	def shandletag(self, tagin, attrs):
+		if self.estado == 0 and tagin == self.lista[0]:
+			if ('class', 'ad_cclk') in attrs:
+				self.estado += 1
+		elif tagin == self.lista[self.estado]:
+			self.estado += 1
+			if(self.estado == len(self.lista)):
+				self._dados.append(attrs[1][1])
+				self.estado = 0
+		else:
+			self.estado = 0
+
+	def ehandletag(self, tagin):
+		pass
+
+	def shandledata(self, data):
+		pass
+
+class AdPreview(Requirement):
+	def __init__(self):
+		self._nome = 'previsaoPropagandas'
+		self._dados = []
 		self.dado = ""
 		self.trigger = "div"
 		self.outer_flag = False
 		self.data_flag = False
 
+	def checkTrigger(self,attrs):
+		for attr in attrs:
+			if attr[0] == 'class' and 'ads-creative' in attr[1]:
+				return True
+		return False
+
 	def shandletag(self, tagin, attrs):
 		if not self.outer_flag:
-			if tagin == self.trigger and ('class', 'ellip ads-creative') in attrs:
+			
+			if tagin == self.trigger and self.checkTrigger(attrs):	
 				self.outer_flag = True
 				self.data_flag = True
-		elif tagin == "div" and ('class','ellip') in attrs:
+		elif tagin == "div" and ('class', 'ellip') in attrs:
 			self.data_flag = True
 		elif not self.data_flag:
 			self.outer_flag = False
-			self.dados.append(self.dado)
+			self._dados.append(self.dado)
 			self.dado = ""
+
 	def ehandletag(self, tagin):
 		if tagin == "div" and self.data_flag:
 			self.data_flag = False
+
 	def shandledata(self, data):
 		if self.data_flag:
 			self.dado += data + ""
-			
 
-class AdTitle():
+class SubResultTitle(Requirement):
 	def __init__(self):
-		self.nome = 'tituloPropagandas'
-		self.dados = []
-		self.lista = ['div',
-						'h3',
-						'a',
-						'a']
-		self.estado = 0
+		self._nome = 'tituloSubresultados'
 		self.data_flag = False
-	def shandletag(self, tagin, attrs):
-		if self.estado == 0 and tagin == self.lista[0]:
-			if ('class','ad_cclk') in attrs:
-				self.estado += 1
-		elif tagin == self.lista[self.estado]:
-			self.estado += 1
-			if(self.estado == len(self.lista)):
-				self.data_flag = True
-				self.estado = 0
-		else:
-			self.estado = 0
-	def ehandletag(self, tagin):
-		pass
-
-	def shandledata(self, data):
-		if self.data_flag:
-			self.dados.append(data)
-			self.data_flag = False
-
-
-class AdLink():
-	def __init__(self):
-		self.nome = 'linkPropagandas'
-		self.dados = []
-		self.lista = ['div',
-						'h3',
-						'a',
-						'a']
-		self.estado = 0
-	def shandletag(self, tagin, attrs):
-		if self.estado == 0 and tagin == self.lista[0]:
-			if ('class','ad_cclk') in attrs:
-				self.estado += 1
-		elif tagin == self.lista[self.estado]:
-			self.estado += 1
-			if(self.estado == len(self.lista)):
-				self.dados.append(attrs[1][1])
-				self.estado = 0
-		else:
-			self.estado = 0
-	def ehandletag(self, tagin):
-		pass
-
-	def shandledata(self, data):
-		pass
-
-
-class SubResultTitle():
-	def __init__(self):
-		self.nome = 'tituloSubresultados'
-		self.data_flag = False
-		self.dados = []
+		self._dados = []
 		self.lista = ["table",
-						"tr",
-						"td",
-						"div",
-						"span",
-						"h3",
-						"a",
-						"div",
-						"div",
-						"br"]
+                    "tr",
+                    "td",
+                    "div",
+                    "span",
+                    "h3",
+                    "a",
+                    "div",
+                    "div",
+                    "br"]
 		self.estado = 0
 
 	def shandletag(self, tagin, attrs):
@@ -144,7 +274,7 @@ class SubResultTitle():
 				self.data_flag = True
 			self.estado += 1
 			if self.estado >= len(self.lista):
-				self.estado = 2			
+				self.estado = 2
 		else:
 			self.estado = 0
 
@@ -154,34 +284,34 @@ class SubResultTitle():
 
 	def shandledata(self, data):
 		if self.data_flag:
-			self.dados.append(data)
+			self._dados.append(data)
 			self.data_flag = False
 
 
-class SubResultLink():
+class SubResultLink(Requirement):
 	def __init__(self):
-		self.nome = 'linkSubresultados'
-		self.dados = []
+		self._nome = 'linkSubresultados'
+		self._dados = []
 		self.lista = [
-						'table',
-						'tr',
-						'td',
-						'div',
-						'span',
-						'h3',
-						'a',
-						'div',
-						'div',
-						'br']
+                    'table',
+              						'tr',
+              						'td',
+              						'div',
+              						'span',
+              						'h3',
+              						'a',
+              						'div',
+              						'div',
+              						'br']
 		self.estado = 0
 
 	def shandletag(self, tagin, attrs):
 		if tagin == self.lista[self.estado]:
 			if self.estado == 6:
-				self.dados.append(attrs[1][1])
+				self._dados.append(attrs[1][1])
 			self.estado += 1
 			if self.estado >= len(self.lista):
-				self.estado = 2			
+				self.estado = 2
 		else:
 			self.estado = 0
 
@@ -193,12 +323,12 @@ class SubResultLink():
 		pass
 
 
-class ResultPreview():
+class ResultPreview(Requirement):
 	def __init__(self):
-		self.nome = 'previsaoResultados'
+		self._nome = 'previsaoResultados'
 		self.h3flag = False
 		self.data_flag = False
-		self.dados = []
+		self._dados = []
 		self.dado = ""
 		self.spans_aninhados = 0
 
@@ -214,21 +344,21 @@ class ResultPreview():
 		if tagin == 'span' and self.data_flag:
 			self.spans_aninhados -= 1
 			if self.spans_aninhados == 0:
-				self.dados.append(self.dado.strip())
+				self._dados.append(self.dado.strip())
 				self.dado = ''
 				self.data_flag = False
-
 
 	def shandledata(self, data):
 		if self.data_flag:
 			self.dado += data
 
-class ResultTitle() :
+
+class ResultTitle(Requirement):
 	def __init__(self):
-		self.nome = 'tituloResultados'
+		self._nome = 'tituloResultados'
+		self._dados = []
 		self.h3flag = False
 		self.dflag = False
-		self.dados = []
 
 	def shandletag(self, tagin, attrs):
 		if self.h3flag:
@@ -252,23 +382,24 @@ class ResultTitle() :
 
 	def shandledata(self, data):
 		if self.dflag:
-			self.dados.append(data)
+			self._dados.append(data)
 			self.dflag = False
 
 	def checkflag(self):
 		return
 
-class ResultLink() :
+
+class ResultLink(Requirement):
 	def __init__(self):
-		self.nome = 'linkResultados'
+		self._nome = 'linkResultados'
 		self.h3flag = False
-		self.dados = []
+		self._dados = []
 
 	def shandletag(self, tagin, attrs):
 		if self.h3flag:
 			if tagin == 'a':
-				if attrs[0][0]=='href':
-					self.dados.append(attrs[0][1])
+				if attrs[0][0] == 'href':
+					self._dados.append(attrs[0][1])
 			self.h3flag = False
 			self.rcflag = False
 		else:
@@ -290,67 +421,12 @@ class ResultLink() :
 	def checkflag(self):
 		return
 
-class TopStoryLink() :
-	def __init__(self):
-		self.tags = set()
-		self.tags.add('g-inner-card')
-		self.nome = 'linkNoticias'
-		self.gflag = False
-		self.dados = []
 
-	def shandletag(self, tagin, attrs):
-		if self.gflag:
-			if tagin == 'a':
-				self.dados.append(attrs[0][1])
-			self.gflag = False
-		elif tagin in self.tags:
-			self.gflag = True
-
-	def ehandletag(self, tagin):
-		return
-
-	def shandledata(self, data):
-		return
-
-class TopStoryTitle() :
-	def __init__(self):
-		self.tags = set()
-		self.tags.add('div')
-		self.nome = 'tituloNoticias'
-		self.flag = False
-		self.atributos = set()
-		self.atributos.add(('style','-webkit-line-clamp:4;height:5.5em'))
-		self.dados = []
-
-	def shandletag(self, tagin, attrs):
-		if tagin in self.tags:
-			aux=[tagin]
-			for attr in attrs:
-				if attr in self.atributos:
-					aux += [attr]
-			if len(aux) > 1:
-				self.flag = True
-
-	def ehandletag(self, tagin):
-		return
-
-	def shandledata(self, data):
-		if self.checkflag():
-			self.dados.append(data)
-
-	def checkflag(self):
-		if self.flag:
-			self.flag=False
-			return True
-		else:
-			return self.flag
 
 class MyParser(HTMLParser):
-
-    
 	def __init__(self):
 		self.flag = False
-		super(MyParser,self).__init__()
+		super(MyParser, self).__init__()
 
 	def handle_starttag(self, tag, attrs):
 		for req in requirement:
@@ -364,17 +440,20 @@ class MyParser(HTMLParser):
 		for req in requirement:
 			req.shandledata(data)
 
-requirement.append(TopStoryImage())
-requirement.append(TopStoryTitle())
-requirement.append(TopStoryLink())
-requirement.append(ResultLink())
-requirement.append(ResultTitle())
-requirement.append(ResultPreview())
-requirement.append(SubResultTitle())
-requirement.append(SubResultLink())
-requirement.append(AdLink())
-requirement.append(AdTitle())
-requirement.append(AdPreview())
+
+requirement.append(TopStory())
+requirement.append(Ad())
+# requirement.append(TopStoryImage())
+# requirement.append(TopStoryTitle())
+# requirement.append(TopStoryLink())
+# requirement.append(ResultLink())
+# requirement.append(ResultTitle())
+# requirement.append(ResultPreview())
+# requirement.append(SubResultTitle())
+# requirement.append(SubResultLink())
+# requirement.append(AdLink())
+# requirement.append(AdTitle())
+# requirement.append(AdPreview())
 
 parser = MyParser()
 
@@ -385,18 +464,32 @@ with open(filename + ".html") as f:
 
 json_string = "{"
 for req in requirement:
-	if(json_string[-1] != '{'):
-		json_string += ","
-	req.nome = req.nome.replace("\"", "\\\"")
-	json_string += "\"" + req.nome + "\"" + ": ["
-	for dado in req.dados:
-		if(json_string[-1] != '['):
-			json_string += ","
-		dado = dado.replace("\"", "\\\"")
-		json_string += "\"" + dado + "\""
-	json_string += "]"		
-json_string += "}"
+	dictoutput[req.nome()] = req.dados()
 
+# print(dictoutput)
+
+# filename += ".json"
+
+# ftry = open(filename,"w+")
+
+# If the file name exists, write a JSON string into the file.
+# if filename:
+    # Writing JSON data
+    # wit/h ftry as f:
+
+# 	if(json_string[-1] != '{'):
+# 		json_string += ","
+# 	req.nome = req.nome.replace("\"", "\\\"")
+# 	json_string += "\"" + req.nome + "\"" + ": ["
+# 	for dado in req.dados:
+# 		if(json_string[-1] != '['):
+# 			json_string += ","
+# 		dado = dado.replace("\"", "\\\"")
+# 		json_string += "\"" + dado + "\""
+# 	json_string += "]"
+# json_string += "}"
+
+json_string = json.dumps(dictoutput)
 print(json_string)
 
 # filename += ".json"
@@ -407,3 +500,4 @@ print(json_string)
 #     # Writing JSON data
 #     with ftry as f:
 #         json.dump(dictoutput, f)
+
