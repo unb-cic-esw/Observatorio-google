@@ -9,6 +9,33 @@ requirement = []
 dictoutput = {}
 
 
+class TopStoryImage():
+
+	def __init__(self):
+		self.nome = 'PrincipaisNoticiasImagens'
+		self.dados = []
+		self.contador = -1
+		self.lista = ['g-img','img']
+
+	def shandletag(self, tagin, attrs):
+		if self.contador == -1:
+			if tagin == 'div' and len(attrs) > 0 and attrs[0] == ('class', 'KNcnob'):
+				self.contador = 0
+		elif tagin == self.lista[self.contador]:
+			self.contador += 1
+		else:
+			self.contador = -1
+			
+		if self.contador == 2:
+			self.dados.append(attrs[1][1])
+			self.contador = -1
+
+	def ehandletag(self, tagin):
+		pass
+
+	def shandledata(self, data):
+		pass
+
 class AdPreview():
 	def __init__(self):
 		self.nome = 'previsaoPropagandas'
@@ -263,7 +290,7 @@ class ResultLink() :
 	def checkflag(self):
 		return
 
-class TopStoriesLink() :
+class TopStoryLink() :
 	def __init__(self):
 		self.tags = set()
 		self.tags.add('g-inner-card')
@@ -285,7 +312,7 @@ class TopStoriesLink() :
 	def shandledata(self, data):
 		return
 
-class TopStoriesTitle() :
+class TopStoryTitle() :
 	def __init__(self):
 		self.tags = set()
 		self.tags.add('div')
@@ -337,8 +364,9 @@ class MyParser(HTMLParser):
 		for req in requirement:
 			req.shandledata(data)
 
-requirement.append(TopStoriesTitle())
-requirement.append(TopStoriesLink())
+requirement.append(TopStoryImage())
+requirement.append(TopStoryTitle())
+requirement.append(TopStoryLink())
 requirement.append(ResultLink())
 requirement.append(ResultTitle())
 requirement.append(ResultPreview())
