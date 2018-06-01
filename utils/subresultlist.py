@@ -8,6 +8,8 @@ class SubResultList(Requirement):
 		self._dados = []
 		self.h3flag = False
 		self.first_cut = False
+		self.srgflag = False
+		self.scopecounter = 0
 
 		self.subr = SubResult()
 
@@ -24,19 +26,31 @@ class SubResultList(Requirement):
 
 	def shandletag(self, tagin, attrs):
 		self.subr.shandletag(tagin,attrs)
-		if self.h3flag:
-			if tagin == 'a':
-				if attrs[0][0] == 'href':
-					self.cutList()
-			self.h3flag = False
+		if self.srgflag:
+			self.scopecounter += 1
+			if self.h3flag:
+				if tagin == 'a':
+					if attrs[0][0] == 'href':
+						self.cutList()
+				self.h3flag = False
+			else:
+				if tagin == 'h3':
+					for attr in attrs:
+						if attr == ('class', 'r'):
+							self.h3flag = True
 		else:
-			if tagin == 'h3':
+			if tagin == "div":
 				for attr in attrs:
-					if attr == ('class', 'r'):
-						self.h3flag = True
+					if attr == ('class', 'srg'):
+						self.srgflag = True
 
 	def ehandletag(self, tagin):
 		self.subr.ehandletag(tagin)
+		if self.srgflag:
+			if self.scopecounter == 0:
+				self.srgflag = False
+			else:
+				self.scopecounter -= 1
 
 	def shandledata(self, data):
 		self.subr.shandledata(data)
