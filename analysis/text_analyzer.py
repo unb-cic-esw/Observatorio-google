@@ -75,6 +75,7 @@ def analyze(documents,num_palavras_chaves):
     # Mostra os 10 itens mais relevantes e frequentes daquela pesquisa
     top_relevant = [x[0] for x in top_relevant[:num_palavras_chaves]]
     top_frequency = [str(x[0]) + '(' + str(x[1]) + ')' for x in top_frequency[:num_palavras_chaves]]
-    print num_palavras_chaves, "palavras mais relevantes: " + ', '.join(top_relevant)
-    print
-    print num_palavras_chaves, "palavras mais frequentes: " + ', '.join(top_frequency)
+    # Retorna uma string contendo: 10 palavras mais relevantes e as 10 mais frequentes
+    return (str(num_palavras_chaves) + " palavras mais relevantes: " + ', '.join(top_relevant) + '\n'
+            )+ (str(num_palavras_chaves) + " palavras mais frequentes: " + ', '.join(top_frequency))
+    
