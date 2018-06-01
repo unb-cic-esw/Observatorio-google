@@ -31,7 +31,6 @@ class CompositeRequirement(Requirement):
 			acc = {}
 			for req in self.lista:
 				acc[req.nome()] = req.dados()[i]
-
 			self._dados.append(acc)
 		return self._dados
 
@@ -47,6 +46,26 @@ class CompositeRequirement(Requirement):
 		for req in self.lista:
 			req.shandledata(data)
 
+class GenericResult(CompositeRequirement):
+
+	def __init__(self):
+		self._nome = 'Resultado'
+		self._dados = []
+		self.lista = []
+		self.lista.append(Ad())
+		self.lista.append(Result())
+
+	def dados(self):
+		for item in self.lista[0].dados():
+			acc = item
+			item["is_ad"] = True
+			self._dados.append(acc)
+
+		for item in self.lista[1].dados():
+			acc = item
+			item["is_ad"] = False
+			self._dados.append(acc)
+		return self._dados
 
 class TopStory(CompositeRequirement):
 	def __init__(self):
@@ -56,6 +75,9 @@ class TopStory(CompositeRequirement):
 		self.lista.append(TopStoryTitle())
 		self.lista.append(TopStoryLink())
 		self.lista.append(TopStoryImage())
+		# self.lista.append(subresultados())
+		
+		
 
 class TopStoryImage(Requirement):
 
@@ -251,6 +273,60 @@ class AdPreview(Requirement):
 		if self.data_flag:
 			self.dado += data + ""
 
+class SubResultList(Requirement):
+
+	def __init__(self):
+		self._nome = 'ListaSubResultados'
+		self._dados = []
+		self.h3flag = False
+		self.first_cut = False
+
+		self.subr = SubResult()
+
+	def dados(self):
+		self.cutList()
+		return self._dados
+
+	def cutList(self):
+		if self.first_cut:
+			self._dados.append(self.subr.dados())
+			self.subr = SubResult()
+		else:
+			self.first_cut = True
+
+	def shandletag(self, tagin, attrs):
+		self.subr.shandletag(tagin,attrs)
+		if self.h3flag:
+			if tagin == 'a':
+				if attrs[0][0] == 'href':
+					self.cutList()
+			self.h3flag = False
+		else:
+			if tagin == 'h3':
+				for attr in attrs:
+					if attr == ('class', 'r'):
+						self.h3flag = True
+
+	def ehandletag(self, tagin):
+		self.subr.ehandletag(tagin)
+
+	def shandledata(self, data):
+		self.subr.shandledata(data)
+		
+
+	def checkflag(self):
+		return
+
+class SubResult(CompositeRequirement):
+	def __init__(self):
+		self._nome = 'SubResultado'
+		self._dados = []
+		self.lista = []
+		self.lista.append(SubResultTitle())
+		self.lista.append(SubResultLink())
+
+
+
 class SubResultTitle(Requirement):
 	def __init__(self):
 		self._nome = 'tituloSubresultados'
@@ -322,6 +398,17 @@ class SubResultLink(Requirement):
 	def shandledata(self, data):
 		pass
 
+class Result(CompositeRequirement):
+	def __init__(self):
+		self._nome = 'Resultado'
+		self._dados = []
+		self.lista = []
+		self.lista.append(ResultTitle())
+		self.lista.append(ResultLink())
+		self.lista.append(ResultPreview())
+		self.lista.append(SubResultList())
+
+
 
 class ResultPreview(Requirement):
 	def __init__(self):
@@ -366,16 +453,12 @@ class ResultTitle(Requirement):
 				if attrs[0][0] == 'href':
 					self.dflag = True
 			self.h3flag = False
-			self.rcflag = False
 		else:
 			if tagin == 'h3':
 				for attr in attrs:
 					if attr == ('class', 'r'):
 						self.h3flag = True
-					else:
-						self.rcflag = False
-			else:
-				self.rcflag = False
+					
 
 	def ehandletag(self, tagin):
 		return
@@ -401,16 +484,11 @@ class ResultLink(Requirement):
 				if attrs[0][0] == 'href':
 					self._dados.append(attrs[0][1])
 			self.h3flag = False
-			self.rcflag = False
 		else:
 			if tagin == 'h3':
 				for attr in attrs:
 					if attr == ('class', 'r'):
 						self.h3flag = True
-					else:
-						self.rcflag = False
-			else:
-				self.rcflag = False
 
 	def ehandletag(self, tagin):
 		return
@@ -442,18 +520,11 @@ class MyParser(HTMLParser):
 
 
 requirement.append(TopStory())
-requirement.append(Ad())
-# requirement.append(TopStoryImage())
-# requirement.append(TopStoryTitle())
-# requirement.append(TopStoryLink())
-# requirement.append(ResultLink())
-# requirement.append(ResultTitle())
-# requirement.append(ResultPreview())
-# requirement.append(SubResultTitle())
-# requirement.append(SubResultLink())
-# requirement.append(AdLink())
-# requirement.append(AdTitle())
-# requirement.append(AdPreview())
+requirement.append(GenericResult())
+# requirement.append(Result())
+
+# requirement.append(Ad())
+
 
 parser = MyParser()
 
@@ -463,9 +534,11 @@ with open(filename + ".html") as f:
     parser.feed(f.read())
 
 json_string = "{"
-for req in requirement:
+for i in range(len(requirement)):
+	req = requirement[i]
 	dictoutput[req.nome()] = req.dados()
 
+# print(requirement)
 # print(dictoutput)
 
 # filename += ".json"
