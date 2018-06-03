@@ -5,6 +5,7 @@ from adlink import AdLink
 
 
 def test_adlink():
+    
     adl = AdLink()
     assert adl.estado == 0
     assert adl._dados == []

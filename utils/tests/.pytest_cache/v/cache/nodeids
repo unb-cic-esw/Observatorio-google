@@ -1,3 +1,4 @@
 [
-  "test_adlink.py::test_adlink"
+  "test_adlink.py::test_adlink",
+  "test_adtitle.py::test_adtitle"
 ]
