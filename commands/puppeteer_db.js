@@ -6,17 +6,16 @@ const Promise = require('es6-promise').Promise;
 const date = new Date();
 
 /**
- * Calls a python script that extracts data from a html file and returns a json with the data.
+ * .
  * 
  * Arguments:
- *  - file: Name of the html file.
  */
 exports.getPuppeteerResults = async() => {
     const queries = await Persistence.read("actors/actors.json");
     const browser = await PuppeteerSearch.newBrowser();
     const page = await browser.newPage();
-    const usuario = process.argv[3];
-    const senha = process.argv[4];
+    const usuario = process.argv[2];
+    const senha = process.argv[3];
     await PuppeteerSearch.loginGoogle(page, usuario, senha);
     try {
         for (let query of queries.atores) {
@@ -27,8 +26,8 @@ exports.getPuppeteerResults = async() => {
             data.ator = query;
             data.perfil = usuario;
             // escreve dados no banco
-            await PesquisasController.createLocal(data);
-        }
+           	await PesquisasController.createLocal(data);
+		}
     } catch (e) {
         process.exit();
     } finally {
