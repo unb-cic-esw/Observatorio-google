@@ -12,13 +12,22 @@ const date = new Date();
  */
 exports.getPuppeteerResults = async() => {
     const queries = await Persistence.read("actors/actors.json");
-    const browser = await PuppeteerSearch.newBrowser();
-    const page = await browser.newPage();
+    let browser = await PuppeteerSearch.newBrowser();
+    let page = await browser.newPage();
     const usuario = process.argv[2];
     const senha = process.argv[3];
+    let cont = 0;
     await PuppeteerSearch.loginGoogle(page, usuario, senha);
     try {
         for (let query of queries.atores) {
+            cont++;
+            if(cont == 30){
+                browser.close();
+                browser = await PuppeteerSearch.newBrowser();
+                page = await browser.newPage();
+                await PuppeteerSearch.loginGoogle(page, usuario, senha);
+            	cont = 0;
+			}
             let data = await PuppeteerSearch.googleSearch(page, query);
             let fileDest = await Persistence.write("pup_" + query, ".html", data);
             data = await htmlParse(fileDest);
@@ -26,8 +35,8 @@ exports.getPuppeteerResults = async() => {
             data.ator = query;
             data.perfil = usuario;
             // escreve dados no banco
-           	await PesquisasController.createLocal(data);
-		}
+            await PesquisasController.createLocal(data);
+        }
     } catch (e) {
         process.exit();
     } finally {
