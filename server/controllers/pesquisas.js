@@ -1,21 +1,12 @@
 const Pesquisa = require('../models').Pesquisa;
+let Sequelize = require('sequelize');
 
 module.exports = {
     create(req, res) {
         let data = req.body;
         return Pesquisa
             .create({
-                data: data.data,
-                perfil: data.perfil,
-                ator: data.ator,
-                tituloNoticias: data.tituloNoticias,
-                linkNoticias: data.linkNoticias,
-                tituloResultados: data.tituloResultados,
-                linkResultados: data.linkResultados,
-                previsaoResultados: data.previsaoResultados,
-                linkPropagandas: data.linkPropagandas,
-                tituloPropagandas: data.tituloPropagandas,
-                previsaoPropagandas: data.previsaoPropagandas
+                dados: data
             })
             .then(pesquisa => res.status(201).send(pesquisa))
             .catch(error => res.status(400).send(error));
@@ -24,17 +15,7 @@ module.exports = {
     createLocal(data) {
         return Pesquisa
             .create({
-                data: data.data,
-                perfil: data.perfil,
-                ator: data.ator,
-                tituloNoticias: data.tituloNoticias,
-                linkNoticias: data.linkNoticias,
-                tituloResultados: data.tituloResultados,
-                linkResultados: data.linkResultados,
-                previsaoResultados: data.previsaoResultados,
-                linkPropagandas: data.linkPropagandas,
-                tituloPropagandas: data.tituloPropagandas,
-                previsaoPropagandas: data.previsaoPropagandas
+                dados: data
             });
     },
 
@@ -63,7 +44,9 @@ module.exports = {
         return Pesquisa
             .findAll({
                 where: {
-                    perfil: req.params.perfil
+                    dados:{
+                        perfil: req.params.perfil
+                    }
                 }
             })
             .then(pesquisas => res.status(200).send(pesquisas))
@@ -74,7 +57,9 @@ module.exports = {
         return Pesquisa
             .findAll({
                 where: {
-                    ator: req.params.ator
+                    dados:{
+                        ator: req.params.ator
+                    }
                 }
             })
             .then(pesquisas => res.status(200).send(pesquisas))
@@ -85,8 +70,30 @@ module.exports = {
         return Pesquisa
             .findAll({
                 where: {
-                    data: req.params.data
+                    dados:{
+                        data: req.params.data
+                    }
                 }
+            })
+            .then(pesquisas => res.status(200).send(pesquisas))
+            .catch(error => res.status(400).send(error));
+    },
+
+    listDatas(req,res) {
+        return Pesquisa
+            .findAll({
+                attributes: [[Sequelize.json('dados.data'),'data']],
+                group: [[[Sequelize.json('dados.data')]]]
+            })
+            .then(pesquisas => res.status(200).send(pesquisas))
+            .catch(error => res.status(400).send(error));
+    },
+
+    listAtores(req,res) {
+        return Pesquisa
+            .findAll({
+                attributes: [[Sequelize.json('dados.ator'),'ator']],
+                group: [[[Sequelize.json('dados.ator')]]]
             })
             .then(pesquisas => res.status(200).send(pesquisas))
             .catch(error => res.status(400).send(error));

@@ -11,4 +11,6 @@ module.exports = (app) => {
   app.get('/api/pesquisas/perfil/:perfil', pesquisasController.listByPerfil);
   app.get('/api/pesquisas/ator/:ator', pesquisasController.listByAtor);
   app.get('/api/pesquisas/data/:data', pesquisasController.listByData);
+  app.get('/api/datas', pesquisasController.listDatas);
+  app.get('/api/atores', pesquisasController.listAtores);
 };

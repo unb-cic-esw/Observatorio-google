@@ -8,38 +8,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      data: {
-        type: Sequelize.STRING
-      },
-      perfil: {
-        type: Sequelize.STRING
-      },
-      ator: {
-        type: Sequelize.STRING
-      },
-      tituloNoticias: {
-        type: Sequelize.ARRAY(Sequelize.STRING)
-      },
-      linkNoticias: {
-        type: Sequelize.ARRAY(Sequelize.STRING)
-      },
-      tituloResultados: {
-        type: Sequelize.ARRAY(Sequelize.STRING)
-      },
-      linkResultados: {
-        type: Sequelize.ARRAY(Sequelize.STRING)
-      },
-      previsaoResultados: {
-        type: Sequelize.ARRAY(Sequelize.STRING)
-      },
-      linkPropagandas: {
-        type: Sequelize.ARRAY(Sequelize.STRING)
-      },
-      tituloPropagandas: {
-        type: Sequelize.ARRAY(Sequelize.STRING)
-      },
-      previsaoPropagandas: {
-        type: Sequelize.ARRAY(Sequelize.STRING)
+      dados: {
+        type: Sequelize.JSONB
       },
       createdAt: {
         allowNull: false,
