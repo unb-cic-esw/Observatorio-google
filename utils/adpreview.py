@@ -21,7 +21,7 @@ class AdPreview(Requirement):
 			if tagin == self.trigger and self.checkTrigger(attrs):	
 				self.outer_flag = True
 				self.data_flag = True
-		elif tagin == "div" and ('class', 'ellip') in attrs:
+		elif tagin == 'div' and ('class', 'ellip') in attrs:
 			self.data_flag = True
 		elif not self.data_flag:
 			self.outer_flag = False
