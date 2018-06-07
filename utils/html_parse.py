@@ -29,59 +29,37 @@ class MyParser(HTMLParser):
 		for req in requirement:
 			req.shandledata(data)
 
+try:
+	requirement.append(TopStory())
+	requirement.append(GenericResult())
+	# requirement.append(Result())
 
-requirement.append(TopStory())
-requirement.append(GenericResult())
-# requirement.append(Result())
-
-# requirement.append(Ad())
+	# requirement.append(Ad())
 
 
-parser = MyParser()
+	parser = MyParser()
 
-filename = input()
+	filename = input()
 
-with open(filename + ".html") as f:
-    parser.feed(f.read())
+	with open(filename + ".html") as f:
+		parser.feed(f.read())
 
-json_string = "{"
-for i in range(len(requirement)):
-	req = requirement[i]
-	dictoutput[req.nome()] = req.dados()
+	json_string = "{"
+	for i in range(len(requirement)):
+		req = requirement[i]
+		dictoutput[req.nome()] = req.dados()
 
-# print(requirement)
-# print(dictoutput)
 
-# filename += ".json"
+	json_string = json.dumps(dictoutput)
+	print(json_string)
+except:
+	print("{}")
+	# filename += ".json"
+	# ftry = open(filename,"w+")
 
-# ftry = open(filename,"w+")
-
-# If the file name exists, write a JSON string into the file.
-# if filename:
-    # Writing JSON data
-    # wit/h ftry as f:
-
-# 	if(json_string[-1] != '{'):
-# 		json_string += ","
-# 	req.nome = req.nome.replace("\"", "\\\"")
-# 	json_string += "\"" + req.nome + "\"" + ": ["
-# 	for dado in req.dados:
-# 		if(json_string[-1] != '['):
-# 			json_string += ","
-# 		dado = dado.replace("\"", "\\\"")
-# 		json_string += "\"" + dado + "\""
-# 	json_string += "]"
-# json_string += "}"
-
-json_string = json.dumps(dictoutput)
-print(json_string)
-
-# filename += ".json"
-# ftry = open(filename,"w+")
-
-# # If the file name exists, write a JSON string into the file.
-# if filename:
-#     # Writing JSON data
-#     with ftry as f:
-#         json.dump(dictoutput, f)
+	# # If the file name exists, write a JSON string into the file.
+	# if filename:
+	#     # Writing JSON data
+	#     with ftry as f:
+	#         json.dump(dictoutput, f)
 
