@@ -3,6 +3,7 @@ const PuppeteerSearch = require("../utils/puppeteer_search");
 const PythonShell = require("python-shell");
 const PesquisasController = require("../server/controllers").pesquisas;
 const Promise = require('es6-promise').Promise;
+let request = require('request');
 const date = new Date();
 
 /**
@@ -35,7 +36,7 @@ exports.getPuppeteerResults = async() => {
             data.ator = query;
             data.perfil = usuario;
             // escreve dados no banco
-            await PesquisasController.createLocal(data);
+            request.post(process.env["POST_URL"], {json : data});
         }
     } catch (e) {
         process.exit();
