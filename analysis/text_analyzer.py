@@ -20,7 +20,7 @@ def word_frequency(document):
     # Num vezes aparece/Total palavras do doc
     word_freq = Counter(document)
     for i in word_freq:
-        word_freq[i] = word_freq[i]/len(word_freq)
+        word_freq[i] = word_freq[i]/len(document)
     return word_freq    
 
 def num_appearences_docs(documents,term):
@@ -38,6 +38,18 @@ def inverse_word_frequency(documents,term_frequency):
         idf[term] = calc
     return idf
 
+def sum_dictionarys(dict1):
+    counter = Counter()
+    for d in dict1: 
+        counter.update(d)
+    return counter  
+
+def create_top_frequency(documents):
+    array_freqs = []
+    for i in documents:
+        array_freqs.append(Counter(i))
+    return (sum_dictionarys(array_freqs))
+
 def analyze(documents,num_palavras_chaves):    
     for i,val in enumerate(documents):
         # Fitra as palavras de todos os documentos
@@ -48,7 +60,7 @@ def analyze(documents,num_palavras_chaves):
     # Cria uma lista contendo todas as frequencias de termos
     word_frequency_list = []
     for doc in documents:    
-        tf = word_frequency(doc)    
+        tf = word_frequency(doc)
         word_frequency_list.append(tf)
         # Usa o tf para calcular o idf      
         idf = dict(idf, ** inverse_word_frequency(documents,tf))       
@@ -61,10 +73,7 @@ def analyze(documents,num_palavras_chaves):
             relevance_list[i] = term_frequency[i] * idf[i]
 
     # Cria uma lista de frequencia
-    top_frequency = Counter(documents[0])
-    for i in range(1,len(documents)):
-        y = Counter(documents[i])
-        top_frequency = { k: top_frequency.get(k,0) + y.get(k,0) for k in set(top_frequency) }
+    top_frequency = create_top_frequency(documents)
         
     # Ordena de forma descendente as listas de 'top'
     top_relevant = sorted(relevance_list.items(), key=operator.itemgetter(1))

@@ -6,6 +6,7 @@ resultados/
 resultados/2018-5-10/
 utils/htmltesting.py
 # Test Folders
+*.pytest_cache/
 testFolder
 123
 @#$

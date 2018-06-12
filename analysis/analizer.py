@@ -25,7 +25,7 @@ def get_domain(link):
     right_domain = right_domain[:right_domain.index('/')]
     return left_domain + right_domain
 
-def getJson(actor):
+def get_json(actor):
     # Pega os dados do heroku
     print('Fetching '  + actor + ' data...')
     with urllib.request.urlopen("https://observatorio-google.herokuapp.com/api/pesquisas/ator/" + actor) as url:
@@ -38,12 +38,12 @@ def get_json_info(list,name):
         result.append(dict[name])
     return result        
 
-def CreateDataFrame(actor):
+def create_data_frame(actor):
     # Json contem uma lista de dictionarys(data_coleta->conteudo)
     # Esta funcao cria um DataFrame contendo: data_coleta, link, dominio
     print('Creating Dataframe...')
     array_dictionaries = []
-    for array in getJson(actor):
+    for array in get_json(actor):
         position = 0        
         time_search = array['dados']['data']
         this_data   = array['dados']['Resultado']
@@ -88,7 +88,7 @@ def get_keywords(data_frame_array,num_keywords):
 
 # Colocar em all_dfs uma lista de todos os dataframes
 # Contenedo os Jsons dentre um range de datas
-all_dfs = [CreateDataFrame('Lula')]
+all_dfs = [create_data_frame('Lula')]
 # Count itera sobre o array de dataframes apenas para fins de print
 count = 1
 for dataframe in all_dfs:

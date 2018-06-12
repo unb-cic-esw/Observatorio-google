@@ -1,3 +1,5 @@
+atomicwrites==1.1.5
+attrs==18.1.0
 boto3==1.7.22
 botocore==1.10.22
 certifi==2018.4.16
@@ -11,7 +13,16 @@ itsdangerous==0.24
 Jinja2==2.10
 jmespath==0.9.3
 MarkupSafe==1.0
+more-itertools==4.2.0
+nltk==3.3
+numpy==1.14.4
+pandas==0.23.0
+pkg-resources==0.0.0
+pluggy==0.6.0
+py==1.5.3
+pytest==3.6.1
 python-dateutil==2.7.3
+pytz==2018.4
 requests==2.18.4
 s3transfer==0.1.13
 six==1.11.0
