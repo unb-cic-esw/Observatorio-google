@@ -7,7 +7,6 @@ from text_analyzer import analyze
 
 
 def sharedcount(url):
-    # Dado um url, exporta seu shared count
     requestUrl = 'http://api.sharedcount.com/?url=' + url + "&apikey=" + os.environ['SharedCountAPI']
     
     try:
@@ -31,8 +30,8 @@ def get_json(actor):
     print('Fetching '  + actor + ' data...')
     with urllib.request.urlopen("https://observatorio-google.herokuapp.com/api/pesquisas/ator/" + actor) as url:
         data = json.loads(url.read().decode())
-        print('Done!')
-        return data    
+        return data
+    print('Done!')
 def get_json_info(list,name):
     result = []
     for dict in list:
@@ -56,7 +55,7 @@ def create_data_frame(actor):
             # Extrai o dominio a partir de string split
             domain = get_domain(link)            
             # Pega o shared count(Facebook) do link
-            data = sharedcount(link)            
+            data = sharedcount(link)
             link_sc = data['Facebook']['share_count']
             # Pega o shared count(Facebook) do dominio
             data = sharedcount(domain)

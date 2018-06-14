@@ -6,10 +6,8 @@ from topstory import TopStory
 from genericresult import GenericResult
 import json
 
-
 requirement = []
 dictoutput = {}
-
 
 # Essa classe separa o html para fornecer entradas aos scanners
 class MyParser(HTMLParser):
@@ -30,37 +28,24 @@ class MyParser(HTMLParser):
 		for req in requirement:
 			req.shandledata(data)
 
-try:
-	requirement.append(TopStory())
-	requirement.append(GenericResult())
-	# requirement.append(Result())
+def extract_info(htmlString):
+	try:
+		requirement.append(TopStory())
+		requirement.append(GenericResult())
+		# requirement.append(Result())
 
-	# requirement.append(Ad())
-
-
-	parser = MyParser()
-
-	filename = input()
-
-	with open(filename + ".html") as f:
-		parser.feed(f.read())
-
-	json_string = "{"
-	for i in range(len(requirement)):
-		req = requirement[i]
-		dictoutput[req.nome()] = req.dados()
+		# requirement.append(Ad())
 
 
-	json_string = json.dumps(dictoutput)
-	print(json_string)
-except:
-	print("{}")
-	# filename += ".json"
-	# ftry = open(filename,"w+")
+		parser = MyParser()
 
-	# # If the file name exists, write a JSON string into the file.
-	# if filename:
-	#     # Writing JSON data
-	#     with ftry as f:
-	#         json.dump(dictoutput, f)
+		parser.feed(htmlString)
 
+		json_string = "{"
+		for i in range(len(requirement)):
+			req = requirement[i]
+			dictoutput[req.nome()] = req.dados()
+		
+		return dictoutput
+	except:
+		return json.loads("{}")

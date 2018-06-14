@@ -1,8 +1,7 @@
 import pytest
 import sys
-sys.path.append('../')
+sys.path.insert(0, sys.path[0] + "/../")
 from adpreview import AdPreview
-
 
 def test_adlink():
     adp = AdPreview()

@@ -1,9 +1,7 @@
 import pytest
 import sys
-sys.path.append('../')
+sys.path.insert(0, sys.path[0] + "/../")
 from adtitle import AdTitle
-
-
 
 def test_adtitle():
     adt = AdTitle()
