@@ -4,6 +4,7 @@ from topstorytitle import TopStoryTitle
 from topstorylink import  TopStoryLink
 from topstoryimage import  TopStoryImage
 
+# Essa classe representa os dados de uma principal noticia
 
 class TopStory(CompositeRequirement):
 	def __init__(self):

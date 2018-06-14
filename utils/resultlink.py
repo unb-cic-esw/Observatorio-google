@@ -1,6 +1,7 @@
 from requirement import Requirement
 
 
+# Essa classe representa o link de um resultado não patrocinado
 class ResultLink(Requirement):
 	def __init__(self):
 		self._nome = 'linkResultados'

@@ -1,6 +1,6 @@
 from requirement import Requirement
 
-
+# Essa classe representa o link para a imagem de uma principal noticia
 class TopStoryImage(Requirement):
 
 	def __init__(self):

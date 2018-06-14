@@ -1,5 +1,7 @@
 from requirement import Requirement
 
+
+# Essa classe representa o link de um subresultado
 class SubResultLink(Requirement):
 	def __init__(self):
 		self._nome = 'linkSubresultados'

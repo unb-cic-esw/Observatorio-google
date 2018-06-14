@@ -1,6 +1,7 @@
 from requirement import Requirement
 from subresult import SubResult 
 
+# Essa classe representa a lista de subresultados de um resultado
 class SubResultList(Requirement):
 
 	def __init__(self):

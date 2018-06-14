@@ -1,5 +1,7 @@
 from requirement import Requirement
 
+
+# Essa classe representa o titulo de um resultado não patrocinado
 class ResultTitle(Requirement):
 	def __init__(self):
 		self._nome = 'tituloResultados'

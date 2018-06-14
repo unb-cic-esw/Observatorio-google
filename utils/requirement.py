@@ -1,3 +1,5 @@
+# Essa classe representa um requisito atômico, isto é,
+# um requisito que não depende de outros requisitos.
 class Requirement():
 
 	def __init__(self):

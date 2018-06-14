@@ -1,6 +1,7 @@
 from requirement import Requirement
 
 
+# Essa classe representa o titulo de um subresultado
 class SubResultTitle(Requirement):
 	def __init__(self):
 		self._nome = 'tituloSubresultados'
