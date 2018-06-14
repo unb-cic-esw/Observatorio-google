@@ -7,6 +7,7 @@ from text_analyzer import analyze
 
 
 def sharedcount(url):
+    # Dado um url, exporta seu shared count
     requestUrl = 'http://api.sharedcount.com/?url=' + url + "&apikey=" + os.environ['SharedCountAPI']
     
     try:

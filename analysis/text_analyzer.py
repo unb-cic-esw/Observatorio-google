@@ -39,12 +39,14 @@ def inverse_word_frequency(documents,term_frequency):
     return idf
 
 def sum_dictionarys(dict1):
+    # Soma dois dicionarios
     counter = Counter()
     for d in dict1: 
         counter.update(d)
     return counter  
 
 def create_top_frequency(documents):
+    # Cria um dicionario com as frequências de todos os documentos
     array_freqs = []
     for i in documents:
         array_freqs.append(Counter(i))
@@ -72,18 +74,17 @@ def analyze(documents,num_palavras_chaves):
         for i in term_frequency:
             relevance_list[i] = term_frequency[i] * idf[i]
 
-    # Cria uma lista de frequencia
+    # Ordena as listas top de forma decrescente
     top_frequency = create_top_frequency(documents)
-        
-    # Ordena de forma descendente as listas de 'top'
-    top_relevant = sorted(relevance_list.items(), key=operator.itemgetter(1))
-    top_relevant = top_relevant[::-1]
+    top_frequency = zip(top_frequency.values(),top_frequency.keys())    
+    top_frequency = sorted(top_frequency)[::-1]
+    top_frequency = [str(x[1]) + '(' + str(x[0]) + ')' for x in top_frequency[:num_palavras_chaves]]
 
-    top_frequency = sorted(top_frequency.items(), key=operator.itemgetter(1))
-    top_frequency = top_frequency[::-1]
-    # Mostra os 10 itens mais relevantes e frequentes daquela pesquisa
-    top_relevant = [x[0] for x in top_relevant[:num_palavras_chaves]]
-    top_frequency = [str(x[0]) + '(' + str(x[1]) + ')' for x in top_frequency[:num_palavras_chaves]]
+    top_relevant  = zip(relevance_list.values(),relevance_list.keys())    
+    top_relevant  = sorted(top_relevant)[::-1] 
+    top_relevant  = [str(x[1]) + '(' + str(x[0])[:5] + ')' for x in top_relevant [:num_palavras_chaves]]
+    
+    
     # Retorna uma string contendo: 10 palavras mais relevantes e as 10 mais frequentes
     return (str(num_palavras_chaves) + " palavras mais relevantes: " + ', '.join(top_relevant) + '\n'
             )+ (str(num_palavras_chaves) + " palavras mais frequentes: " + ', '.join(top_frequency))

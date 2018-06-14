@@ -19,6 +19,7 @@ outro_html.html
 .env
 *.pyc
 *.vscode/
+*.coverage
 all_dates.json
 analysis/in.json
 analysis/in2.json
