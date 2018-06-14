@@ -4,7 +4,7 @@ from adlink import AdLink
 from adpreview import AdPreview
 
 
-
+# Essa classe encapsula as informações sobre resultados patrocinados
 class Ad(CompositeRequirement):
 	def __init__(self):
 		self._nome = 'Ad'

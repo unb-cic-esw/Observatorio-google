@@ -1,5 +1,6 @@
 from requirement import Requirement
 
+# Essa classe representa os titulos de um resultado patrocinado
 class AdTitle(Requirement):
 	def __init__(self):
 		self._nome = 'tituloPropagandas'

@@ -1,5 +1,6 @@
 from requirement import Requirement
 
+# Essa classe representa os links para resultados patrocinados
 class AdLink(Requirement):
 	def __init__(self):
 		self._nome = 'linkPropagandas'

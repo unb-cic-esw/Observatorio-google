@@ -1,5 +1,6 @@
 from requirement import Requirement
 
+# Essa classe representa o texto de um resultado patrocinado
 class AdPreview(Requirement):
 	def __init__(self):
 		self._nome = 'previsaoPropagandas'

@@ -1,5 +1,10 @@
 from requirement import Requirement
 
+
+# Essa é uma classe abstrata que representa todos os requisitos que 
+# não são atômicos, isso é, requisitos que tem outros requisitos.
+# Por exemplo: Ad representa os dados sobre resultados patrocinados
+# Que por sua vez, é formado pelos dados de AdPreview, AdTitle e AdLink.
 class CompositeRequirement(Requirement):
 	def __init__(self):
 		super(CompositeRequirement, self).__init__()

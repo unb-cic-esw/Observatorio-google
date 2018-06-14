@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*
 
 from html.parser import HTMLParser
 from topstory import TopStory
 from genericresult import GenericResult
 import json
 
-# import .requirement
-
 
 requirement = []
 dictoutput = {}
 
+
+# Essa classe separa o html para fornecer entradas aos scanners
 class MyParser(HTMLParser):
+
 	def __init__(self):
 		self.flag = False
 		super(MyParser, self).__init__()
