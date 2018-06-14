@@ -31,8 +31,8 @@ def get_json(actor):
     print('Fetching '  + actor + ' data...')
     with urllib.request.urlopen("https://observatorio-google.herokuapp.com/api/pesquisas/ator/" + actor) as url:
         data = json.loads(url.read().decode())
-        return data
-    print('Done!')
+        print('Done!')
+        return data    
 def get_json_info(list,name):
     result = []
     for dict in list:
@@ -56,7 +56,7 @@ def create_data_frame(actor):
             # Extrai o dominio a partir de string split
             domain = get_domain(link)            
             # Pega o shared count(Facebook) do link
-            data = sharedcount(link)
+            data = sharedcount(link)            
             link_sc = data['Facebook']['share_count']
             # Pega o shared count(Facebook) do dominio
             data = sharedcount(domain)
