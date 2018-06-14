@@ -1,5 +1,6 @@
 from requirement import Requirement
 
+# Essa classe representa o titulo de uma principal noticia
 class TopStoryTitle(Requirement):
 	def __init__(self):
 		self.tags = set()

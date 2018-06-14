@@ -1,5 +1,7 @@
 from requirement import Requirement
 
+
+# Essa classe representa o texto de um resultado não patrocinado
 class ResultPreview(Requirement):
 	def __init__(self):
 		self._nome = 'previsaoResultados'

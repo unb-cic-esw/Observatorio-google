@@ -1,5 +1,6 @@
 from requirement import Requirement
 
+# Essa classe representa o link para uma principal noticia
 class TopStoryLink(Requirement):
 	def __init__(self):
 		self.tags = set()

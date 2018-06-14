@@ -2,6 +2,7 @@ from compositerequirement import CompositeRequirement
 from ad import Ad
 from result import Result
 
+# Essa clase representa um resultado que pode ser patrocinado ou não
 class GenericResult(CompositeRequirement):
 
 	def __init__(self):

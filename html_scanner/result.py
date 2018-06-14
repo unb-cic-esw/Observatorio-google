@@ -4,6 +4,7 @@ from resultlink import ResultLink
 from resultpreview import ResultPreview
 from subresultlist import SubResultList
 
+# Essa classe representa os dados de um resultado não patrocinado
 class Result(CompositeRequirement):
 	def __init__(self):
 		self._nome = 'Resultado'
