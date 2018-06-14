@@ -53,7 +53,7 @@ exports.getPuppeteerResults = async() => {
  *  - file: Name of the html file.
  */
 const htmlParse = async(file) => {
-    let pyshell = new PythonShell("./utils/html_scanner.py");
+    let pyshell = new PythonShell("./html_scanner/html_scanner.py");
 
     pyshell.send(file);
 
