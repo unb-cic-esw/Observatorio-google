@@ -14,7 +14,6 @@ def google_search(driver, query):
 
     driver.get(baseLink + query)
 
-    outputFile = query + ".html" 
     return driver.page_source
 
 def gmail_sign_in(driver, profile):
