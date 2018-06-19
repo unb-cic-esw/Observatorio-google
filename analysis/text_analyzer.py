@@ -86,5 +86,5 @@ def analyze(documents,num_palavras_chaves):
     
     
     # Retorna uma string contendo: 10 palavras mais relevantes e as 10 mais frequentes
-    return (str(num_palavras_chaves) + " palavras mais relevantes: " + ', '.join(top_relevant) + '\n'
+    return str(str(num_palavras_chaves) + " palavras mais relevantes: " + ', '.join(top_relevant) + '\n'
             )+ (str(num_palavras_chaves) + " palavras mais frequentes: " + ', '.join(top_frequency))

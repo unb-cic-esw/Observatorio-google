@@ -1,4 +1,6 @@
 import pytest
+import sys
+sys.path.insert(0, '../')
 import text_analyzer
 
 def test_word_filter():
@@ -43,4 +45,4 @@ def test_analyze():
     stringc = "ostriches, emus, rheas, and cassowaries), and lay the largest egg in relation to their body size of any species of bird in the world"
     documents = [stringa,stringb,stringc]
     result  = text_analyzer.analyze(documents,4)
-assert result == "4 palavras mais relevantes: zealand(0.109), ratites(0.109), new(0.109), native(0.109)\n4 palavras mais frequentes: size(2), kiwi(2), zealand(1), world(1)"
+    assert result == "4 palavras mais relevantes: zealand(0.109), ratites(0.109), new(0.109), native(0.109)\n4 palavras mais frequentes: size(2), kiwi(2), zealand(1), world(1)"

@@ -5,8 +5,10 @@ import os
 import urllib.request
 from text_analyzer import analyze
 
+# Modulo definido para operacoes com data frames
+# Como criacao e analises.
 
-def sharedcount(url):
+def shared_count(url):
     # Dado um url, exporta seu shared count
     requestUrl = 'http://api.sharedcount.com/?url=' + url + "&apikey=" + os.environ['SharedCountAPI']
     
@@ -18,7 +20,7 @@ def sharedcount(url):
 
     return apiJson
 
-# DataFrame contém: hora_busca,link, dominio do link, titulo, 
+# DataFrame contem: hora_busca,link, dominio do link, titulo, 
 # posicao na busca, preview e shared count do link e dominio
 def get_domain(link):
     left_domain   = link[:link.index('/')+2]
@@ -39,12 +41,12 @@ def get_json_info(list,name):
         result.append(dict[name])
     return result        
 
-def create_data_frame(actor):
+def create_data_frame(fetched_json):
     # Json contem uma lista de dictionarys(data_coleta->conteudo)
     # Esta funcao cria um DataFrame contendo: data_coleta, link, dominio
     print('Creating Dataframe...')
     array_dictionaries = []
-    for array in get_json(actor):
+    for array in fetched_json:
         position = 0        
         time_search = array['dados']['data']
         this_data   = array['dados']['Resultado']
@@ -56,12 +58,11 @@ def create_data_frame(actor):
             # Extrai o dominio a partir de string split
             domain = get_domain(link)            
             # Pega o shared count(Facebook) do link
-            data = sharedcount(link)            
-            link_sc = data['Facebook']['share_count']
+            data = shared_count(link)
+            link_sc = data['Facebook']['share_count']            
             # Pega o shared count(Facebook) do dominio
-            data = sharedcount(domain)
+            data = shared_count(domain)
             domain_sc = data['Facebook']['share_count']
-            
             #Cria um dicionario para o array de dicionarios
             this_dictionary = {'time': time_search,'link': link,'domain': domain,
                             'title': title,'position': position,'preview': preview,
@@ -78,8 +79,10 @@ def domain_count(data_frame_array):
     # Agrupa por dominio e conta as aparicoes de cada link
     count_df = all_dfs.groupby('domain').count()['link']
     print (count_df)
+    return count_df
 
 def get_keywords(data_frame_array,num_keywords):
+
     documents = []
     for df in data_frame_array:
         string = ' '.join(p for p in df['preview'])        
@@ -87,21 +90,24 @@ def get_keywords(data_frame_array,num_keywords):
     
     print (analyze( documents, num_keywords ))
 
-# Colocar em all_dfs uma lista de todos os dataframes
-# Contenedo os Jsons dentre um range de datas
-all_dfs = [create_data_frame('Lula')]
-# Count itera sobre o array de dataframes apenas para fins de print
-count = 1
-for dataframe in all_dfs:
-    # Busca uma correlação entre o shared count do dominio/link e a posição    
-    print("Correlação entre o shared count do link e posição no " +
-        str(count) + "º dataframe: ", dataframe['link_sc'].corr(dataframe['position']))
-    print("Correlação entre o shared count do dominio e posição no " + 
-        str(count) + "º dataframe: ", dataframe['domain_sc'].corr(dataframe['position']))
-    print()
-    count += 1
-print()
 
-domain_count(all_dfs)
-print 
-get_keywords(all_dfs,10)
+if __name__ == "__main__":
+    # Colocar em all_dfs uma lista de todos os dataframes
+    # Contendo os Json's desejados 
+    fetched_json = get_json('ciro%202018')
+    all_dfs = [create_data_frame(fetched_json)]
+    # Count itera sobre o array de dataframes apenas para fins de print
+    count = 1
+    for dataframe in all_dfs:
+        # Busca uma correlação entre o shared count do dominio/link e a posição    
+        print("Correlação entre o shared count do link e posição no " +
+            str(count) + "º dataframe: ", dataframe['link_sc'].corr(dataframe['position']))
+        print("Correlação entre o shared count do dominio e posição no " + 
+            str(count) + "º dataframe: ", dataframe['domain_sc'].corr(dataframe['position']))
+        print()
+        count += 1
+    print()
+
+    domain_count(all_dfs)
+    print 
+    get_keywords(all_dfs,10)
