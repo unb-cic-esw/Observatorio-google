@@ -5,13 +5,15 @@
 # -*- coding: utf-8 -*
 
 import os
+import sys
 import json
 import time
 import datetime
 import requests
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-from html_scanner.html_scanner import extract_info
+sys.path.insert(0, sys.path[0] + "/html_scanner")
+from html_scanner import extract_info
 
 def google_search(driver, query):
     """ Navega driver para a página com resultado da pesquisa no google do termo query """
@@ -50,18 +52,18 @@ def main():
     fireforx_profile = webdriver.FirefoxProfile()
     fireforx_profile.set_preference(
         "general.useragent.override",
-        """Mozilla/5.0 (Windows NT 6.1; Win64; x64)
-         AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36""")
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64)" +
+        " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36")
 
     options = Options()
-    options.set_headless(headless=True)
-
+    options.set_headless(headless=False)
+    
     with open("profiles.json") as profiles_file:
         profiles = json.load(profiles_file)
 
         for profile in profiles:
             driver = webdriver.Firefox(fireforx_profile, firefox_options=options)
-
+            
             if profile["login"] != "":
                 gmail_sign_in(driver, profile)
 
