@@ -1,22 +1,18 @@
-import pytest
 import sys
-
-sys.path.insert(0, '../')
-import data_frame_op
 import json
 import pandas
-
-from pprint import pprint
+sys.path.insert(0, '../')
+import data_frame_op
 
 def get_test_df():
     # Funcao apenas para fins de testes
-    with open('test.json') as f:
-        data = json.load(f)
+    with open('test.json') as file:
+        data = json.load(file)
     return [data_frame_op.create_data_frame(data)]
 
 def test_creation():
-    df = get_test_df()
-    assert type(df[0]) == pandas.core.frame.DataFrame
+    data_frame = get_test_df()
+    assert isinstance(data_frame[0], pandas.core.frame.DataFrame)
 
 def test_get_domain():
     domain = 'https://www.youtube.com/watch?v=MXzKLpYTfBE'
@@ -24,6 +20,6 @@ def test_get_domain():
     assert res == 'https://www.youtube.com'
 
 def test_domain_count():
-    df = get_test_df()
-    res = data_frame_op.domain_count(df)
+    data_frame = get_test_df()
+    res = data_frame_op.domain_count(data_frame)
     assert res['https://todoscomciro.com'] == 2
