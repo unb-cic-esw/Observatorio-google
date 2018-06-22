@@ -1,3 +1,0 @@
-#Tarefas sugeridas
-
-####Novos requisitos
