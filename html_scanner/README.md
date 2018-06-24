@@ -48,8 +48,8 @@ Análogamente, a função ehandledata define o que aquela classe faz no fechamen
 texto
 </p>
 ```
-O Elemento "<p>" será encontrado, e vai disparar a função "shandledata" com "p" no argumento "tagin", depois,
-elemento "texto" será encontrado, e vai disparar a função "shandledata" com "texto" no argumento "data". Por fim, "</p>" vai disparar a função "ehandledata" com "p" como "tagin". Vendo a implementação de algum requisito atômico ajuda a entender melhor.
+O Elemento "p" será encontrado, e vai disparar a função "shandledata" com "p" no argumento "tagin", depois,
+elemento "texto" será encontrado, e vai disparar a função "shandledata" com "texto" no argumento "data". Por fim, "/p" vai disparar a função "ehandledata" com "p" como "tagin". Vendo a implementação de algum requisito atômico ajuda a entender melhor.
 
 ## Fluxo das operações
 
