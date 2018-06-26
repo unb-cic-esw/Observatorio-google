@@ -1,4 +1,5 @@
 import json
+import sys
 import os
 import urllib.request
 import pandas as pd
@@ -31,7 +32,7 @@ def get_domain(link):
 def get_json(actor):
     # Pega os dados do heroku
     print('Fetching ' + actor + ' data...')
-    request_url = "https://observatorio-google.herokuapp.com/api/pesquisas/ator/"
+    request_url = "https://observatorio-google.herokuapp.com/api/pesquisas/ator/"    
     with urllib.request.urlopen(request_url + actor) as url:
         data = json.loads(url.read().decode())
         print('Done!')
@@ -48,14 +49,24 @@ def create_data_frame(fetched_json):
     # Esta funcao cria um DataFrame contendo: data_coleta, link, dominio
     print('Creating Dataframe...')
     array_dictionaries = []
+    i=0
     for array in fetched_json:
         position = 0
-        time_search = array['dados']['data']
-        this_data = array['dados']['Resultado']
-        links = get_json_info(this_data, 'linkResultados')
-        titles = get_json_info(this_data, 'tituloResultados')
-        previews = get_json_info(this_data, 'previsaoResultados')
+        i+=1
+        print('============' + str(i))        
+        try:
+            time_search = array['dados']['data']
+            this_data = array['dados']['Resultado']
+            links = get_json_info(this_data, 'linkResultados')
+            titles = get_json_info(this_data, 'tituloResultados')
+            previews = get_json_info(this_data, 'previsaoResultados')
+        except:
+            print('nop')
+            continue
         for link, title, preview in zip(links, titles, previews):
+            # Se retirar esse if o loop fica infinito
+            if(i > 6):
+                break
             position += 1
             # Extrai o dominio a partir de string split
             domain = get_domain(link)
@@ -92,10 +103,10 @@ def get_keywords(data_frame_array, num_keywords):
 
     print(analyze(documents, num_keywords))
 
-def main():
+def main(arg):
     # Colocar em all_dfs uma lista de todos os dataframes
     # Contendo os Json's desejados
-    fetched_json = get_json('ciro%202018')
+    fetched_json = get_json(arg)
     all_dfs = [create_data_frame(fetched_json)]
     # Count itera sobre o array de dataframes apenas para fins de print
     count = 1
@@ -114,4 +125,11 @@ def main():
     get_keywords(all_dfs, 10)
 
 if __name__ == "__main__":
-    main()
+    if(len(sys.argv) == 1):
+        print("Por favor mande um ator como parâmetro")
+    else:       
+        # Prepara os argumentos para enviar a um url 
+        l = sys.argv
+        l.pop(0)
+        string = '%20'.join(l)        
+        main(string)
