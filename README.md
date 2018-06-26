@@ -9,7 +9,7 @@ O Observatório Google é uma ferramenta que permite realizar a busca automatiza
 Para configurar o ambiente e executar as buscas automatizadas siga os seguintes tutoriais disponíveis na nossa wiki:
 [Como configurar o ambiente de desenvolvimento local](https://github.com/unb-cic-esw/Observatorio-google/wiki/Como-fazer-o-build-do-ambiente-de-desenvolvimento-local)
 
-[Realizando coleta dos resultados de pesquisas no Google.](https://github.com/unb-cic-esw/Observatorio-google/wiki/Realizando-coleta-dos-resultados-de-pesquisas-no-Google.)
+[Realizando coleta dos resultados de pesquisas no Google.](https://github.com/unb-cic-esw/Observatorio-google/wiki/Realizando-coleta-dos-resultados-de-pesquisas-no-Google)
 
 ## Como Contribuir
 Para contribuir crie um fork e envie um [pull request](https://github.com/unb-cic-esw/Observatorio-google/pulls) com a contribuição para a branch 'master' do projeto.
