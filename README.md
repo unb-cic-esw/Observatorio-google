@@ -7,7 +7,7 @@ O Observatório Google é uma ferramenta que permite realizar a busca automatiza
 ## Instalação e Execução
 
 Para configurar o ambiente e executar as buscas automatizadas siga os seguintes tutoriais disponíveis na nossa wiki:
-[Como configurar o ambiente de desenvolvimento local](https://github.com/unb-cic-esw/Desenvolvendo-Software/wiki/Documenta%C3%A7%C3%A3o-de-Software)
+[Como configurar o ambiente de desenvolvimento local](https://github.com/unb-cic-esw/Observatorio-google/wiki/Como-fazer-o-build-do-ambiente-de-desenvolvimento-local)
 
 [Realizando coleta dos resultados de pesquisas no Google.](https://github.com/unb-cic-esw/Observatorio-google/wiki/Realizando-coleta-dos-resultados-de-pesquisas-no-Google.)
 
