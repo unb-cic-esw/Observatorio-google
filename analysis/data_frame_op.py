@@ -64,9 +64,6 @@ def create_data_frame(fetched_json):
             print('nop')
             continue
         for link, title, preview in zip(links, titles, previews):
-            # Se retirar esse if o loop fica infinito
-            if(i > 6):
-                break
             position += 1
             # Extrai o dominio a partir de string split
             domain = get_domain(link)
