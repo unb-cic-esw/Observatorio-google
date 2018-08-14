@@ -5,6 +5,7 @@ import json
 from html.parser import HTMLParser
 from topstory import TopStory
 from genericresult import GenericResult
+from video import Video
 
 # Essa classe separa o html para fornecer entradas aos scanners
 class MyParser(HTMLParser):
@@ -18,6 +19,7 @@ class MyParser(HTMLParser):
 
         for i in range(len(self.lista)):
             req = self.lista[i]
+            print(req)
             dictoutput[req.nome()] = req.dados()
 
         return dictoutput
@@ -46,6 +48,7 @@ def extract_info(html_string):
 
         parser.add_requirement(TopStory())
         parser.add_requirement(GenericResult())
+        parser.add_requirement(Video())
 
         return parser.run(html_string)
     except:
@@ -56,6 +59,7 @@ def main():
         parser = MyParser()
         parser.add_requirement(TopStory())
         parser.add_requirement(GenericResult())
+        parser.add_requirement(Video())
         print(parser.run(file.read()))
 
 if __name__ == "__main__":
