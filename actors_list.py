@@ -2,7 +2,7 @@ import urllib.request
 import sys
 
 def retrieve_actors():
-    url = "https://gist.githubusercontent.com/maxstabile/739980036872608ca2633331aca9166b/raw/3fb21ca421aa2f958c0e02d83d7e71b5caf2ebbe/actors.txt"
+    url = "https://gist.githubusercontent.com/maxstabile/739980036872608ca2633331aca9166b/raw/actors.txt"
     actors_list = []
     try:
         for data in urllib.request.urlopen(url):
