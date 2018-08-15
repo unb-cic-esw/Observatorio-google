@@ -10,7 +10,6 @@ import json
 import time
 import datetime
 import requests
-import actors_list
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 sys.path.insert(0, sys.path[0] + "/html_scanner")
@@ -67,15 +66,15 @@ def main():
             
             if profile["login"] != "":
                 gmail_sign_in(driver, profile)
-
-            buscas = actors_list.retrieve_actors()
-            for busca in buscas:
-                google_html = google_search(driver, busca)
-                json_data = extract_info(google_html)
-                json_data["data"] = str(datetime.date.today())
-                json_data["ator"] = busca
-                json_data["perfil"] = profile["login"]
-                requests.post(os.environ["POST_URL"], json=json_data)
+            with open("actors/actors.json") as actors:
+                buscas = json.load(actors)
+                for busca in buscas["atores"]:
+                    google_html = google_search(driver, busca)
+                    json_data = extract_info(google_html)
+                    json_data["data"] = str(datetime.date.today())
+                    json_data["ator"] = busca
+                    json_data["perfil"] = profile["login"]
+                    requests.post(os.environ["POST_URL"], json=json_data)
             driver.close()
 
 if __name__ == "__main__":
