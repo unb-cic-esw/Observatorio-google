@@ -67,7 +67,6 @@ def main():
             
             if profile["login"] != "":
                 gmail_sign_in(driver, profile)
-
             buscas = actors_list.retrieve_actors()
             for busca in buscas:
                 google_html = google_search(driver, busca)
