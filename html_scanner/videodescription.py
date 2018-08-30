@@ -3,7 +3,7 @@ from requirement import Requirement
 
 class VideoDescription(Requirement):
     def __init__(self):
-        self._nome = 'linkVideos'
+        self._nome = 'DescricaoVideos'
         self._dados = []
         self.lista = ['div',
                       'div',
