@@ -9,6 +9,7 @@ import sys
 import json
 import time
 import datetime
+from random import shuffle
 import requests
 import actors_list
 from selenium import webdriver
@@ -18,9 +19,9 @@ from html_scanner import extract_info
 
 def google_search(driver, query):
     """ Navega driver para a página com resultado da pesquisa no google do termo query """
-
+	
     base_link = "https://www.google.com/search?q="
-
+    driver.get("https://www.google.com")
     driver.get(base_link + query)
 
     return driver.page_source
@@ -59,23 +60,29 @@ def main():
     options = Options()
     options.set_headless(headless=False)
     
+    profile_list = []
+
     with open("profiles.json") as profiles_file:
         profiles = json.load(profiles_file)
-
         for profile in profiles:
-            driver = webdriver.Firefox(fireforx_profile, firefox_options=options)
-            
-            if profile["login"] != "":
-                gmail_sign_in(driver, profile)
-            buscas = actors_list.retrieve_actors()
-            for busca in buscas:
-                google_html = google_search(driver, busca)
-                json_data = extract_info(google_html)
-                json_data["data"] = str(datetime.date.today())
-                json_data["ator"] = busca
-                json_data["perfil"] = profile["login"]
-                requests.post(os.environ["POST_URL"], json=json_data)
-            driver.close()
+            profile_list.append(profile)
+
+    shuffle(profile_list)
+
+    for profile in profile_list:
+        driver = webdriver.Firefox(fireforx_profile, firefox_options=options)
+        
+        if profile["login"] != "":
+            gmail_sign_in(driver, profile)
+        buscas = actors_list.retrieve_actors()
+        for busca in buscas:
+            google_html = google_search(driver, busca)
+            json_data = extract_info(google_html)
+            json_data["data"] = str(datetime.date.today())
+            json_data["ator"] = busca
+            json_data["perfil"] = profile["login"]
+            requests.post(os.environ["POST_URL"], json=json_data)
+        driver.close()
 
 if __name__ == "__main__":
     main()
