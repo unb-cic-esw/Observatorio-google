@@ -62,7 +62,12 @@ def main():
     
     profile_list = []
 
-    with open("profiles.json") as profiles_file:
+    prof_file = "profiles.json"
+
+    if len(sys.argv) > 1:
+        prof_file = sys.argv[1]
+
+    with open(prof_file) as profiles_file:
         profiles = json.load(profiles_file)
         for profile in profiles:
             profile_list.append(profile)
